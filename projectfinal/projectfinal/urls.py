@@ -16,8 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Dyscreen.views import hello
+from Dyscreen.views import hello,ping_mongo
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hello/', hello),
+    path('ping-mongo', ping_mongo),
 ]
