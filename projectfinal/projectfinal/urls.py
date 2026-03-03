@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Dyscreen.views import hello,ping_mongo
+from django.conf import settings
+from Dyscreen.views import hello,ping_mongo,file_model_functions
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hello/', hello),
     path('ping-mongo', ping_mongo),
+    path('upload_file',file_model_functions.as_view())
 ]
+

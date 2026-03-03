@@ -1,0 +1,93 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+.regform{
+    display: block ;
+    background-color:#ffffff;
+    text-align: center;
+    border: 20vw 20vh;
+    border-style:solid;
+    border-width: 3px;
+    border-color: rgb(214, 216, 219);
+    padding : 20px 20px;
+}
+.form{
+    padding: 20%;
+    margin: 20%;
+}
+
+label {
+     text-align: left; 
+    font-size: larger;
+    color: black;
+    font-style: italic;
+    padding: 20px;
+    margin: 10px;
+}
+
+input {
+    font-size: larger;
+
+    padding: 5px;
+    margin: 2px;
+
+}
+
+.flip-card{
+    background-color: transparent;
+    width: 30vw; 
+    height :20vh;
+    border : 15px solid #f1f1f1;
+    perspective : 1000px;
+
+}
+
+.flip-card:hover .flip-card-inner {
+    transform :rotateY(180deg);
+}
+
+.flip-card-inner{
+    position: relative;
+    width:100%;
+    height: 100%;
+    
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flip-card-front,.flip-card-back{
+    position: absolute;
+    width: 100%;
+    height:100%;
+    -webkit-backface-visibility: hidden ;/*Safari */
+    backface-visibility:hidden;
+
+}
+
+.flip-card-back{
+    background-color: dodgerblue;
+    color:white;
+    transform: rotateY(180deg);
+}
+
+.error-message-username{
+    color:red;
+    margin: 10vw 10vh;
+    border:5px solid #f1f1f1;
+    transition: transform 0.1s;
+    border-radius: 30vw 30vh
+}
+
+.form-style{
+    margin: 3vw 3vh;
+    
+}
+
+.Registration-div{
+    background-color:white;
+
+}
