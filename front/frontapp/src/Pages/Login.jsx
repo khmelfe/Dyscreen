@@ -13,7 +13,7 @@ export default function Login() {
 
     useEffect(()=>{
         document.getElementById("loader").hidden = true; //making sure loader won't run.
-
+        document.getElementById("welcome back!").hidden = true;
     },[])
 
     //addresses login.
@@ -105,7 +105,7 @@ export default function Login() {
                 </button>
                 <div class="signup-link">
                     <span>Don't have an account</span>
-                    <a href="#"> Register now!</a>
+                    <a href="/Re"> Register now!</a>
                 </div>
               
                 <div class="success-message" id="successMessage">
@@ -118,8 +118,7 @@ export default function Login() {
                     </div>
                 </div>
                 </div>
-                <h3>Welcome back!</h3>
-                <p>Redirecting to Dashboard...</p>
+                <h3 id = "welcome back!">Welcome back!</h3>
             </div>
             <script src="../../shared/js/form-utils.js"></script>
             <script src="script.js"></script>

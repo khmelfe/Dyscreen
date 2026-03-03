@@ -29,7 +29,10 @@ export default function Home() {
         try{
             const res = await axios.post(BASE_URL_UPLOAD,dataForm)
             console.log(res.data.prob)
+            res.data.prob = (res.data.prob * 100).toFixed(4); 
+            
             setresults(res);
+
             alert("Great sucess \n ", res.pred_class);
         }
 
@@ -67,23 +70,23 @@ export default function Home() {
                 <label for="uploaded_file">Uploaded file : {file ? file.name : "None" }</label>
             </div>
             <div>
-                <h3 for= "results"> results: {results? results.data.label : "None"} </h3> 
+                <h3 for= "results"> Model results: {results? results.data.label : "None"} </h3> 
                 <br/>
                 
-                <h3 for= "results"> results accuracy:</h3> 
+                <h3 for= "results"> Likelihood of Dyslexia :  </h3> 
                 <br/>
                 
-             {results && results.data.prob < 0.1 && (
+             {results && results.data.prob < 50 && (
                 <Progress_bar
                 bgcolor="green"
-                progress= {results.data.prob *100 }
+                progress= {Number(results.data.prob)  }
                 height={30}
             />)
             }
-             {results && results.data.prob > 0.5 && (
+             {results && results.data.prob > 50 && (
                 <Progress_bar
                 bgcolor="red"
-                progress= {results.data.prob * 100 }
+                progress= {Number(results.data.prob) }
                 height={30}
             />)
             }

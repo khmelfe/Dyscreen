@@ -35,6 +35,7 @@ class file_model_functions(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
     def save_file(self,request):
+        
         print("Saving File \n")
         f = request.FILES.get("myfile")
         upload_dir = os.path.join(settings.MEDIA_ROOT, "uploads")
@@ -56,7 +57,7 @@ class file_model_functions(APIView):
         # allowed_ext = (".png",".jpg","jpeg")
         # if file.name.lower().endswith(allowed_ext) not in allowed_ext:
         #     return Response({
-        #         "error":"Invalid file type."
+        #df["profile_img"] = df["profile_img"].notna().astype(intdf["profile_img"] = df["profile_img"].notna().astype(int))         "error":"Invalid file type."
         #     },status = 415)
         try:
             print("Well\n")
@@ -70,3 +71,4 @@ class file_model_functions(APIView):
                     "error":"Model failed",
                     "details": str(err)
                 },status = 500)
+        
