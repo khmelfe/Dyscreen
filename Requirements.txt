@@ -1,4 +1,13 @@
+django
+djangorestframework
+django-cors-headers
+pandas
+tensorflow
+opencv-python
+matplotlib
+pymongo
+scikit-learn
+python-dotenv
 rest_framework
 dotenv
 corsheaders
-pymongo

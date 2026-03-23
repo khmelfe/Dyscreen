@@ -12,8 +12,6 @@ const BASE_URL_Registration = "http://127.0.0.1:8000/";
         }
 
 export default function Registration() {
-
-  
     
     const [username,setusername] = useState("");
     const [password,setpassword] = useState("");

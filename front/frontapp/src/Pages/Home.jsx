@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import   '../Styles/Home.css'
 import Progress_bar from "../Components/Progressbar"
+import Nav_Bar from "../Pages/Nav_Bar";
 const BASE_URL_UPLOAD = "http://127.0.0.1:8000/upload_file";
 
 export default function Home() {
@@ -47,15 +48,17 @@ export default function Home() {
     return(
         <div>
             <div className= "headerarea">
-                <header className="header">
+                {/* <header className="header">
                     <h1>Dyscreen</h1>
-                </header>
+                </header> */}
             </div>
             <div className = "content">
-                <h1>Welcome to our site!</h1>
-                <p>Please upload a file to the system so we could examine it!</p>
+                <h1>Welcome to DyScreen</h1>
+                <p>We utilize advanced Deep Learning models to help identify learning differences across all age groups. <br/> Early screening is the first step toward personalized support and academic success.</p>
+                <br/>
+                <p>Prepare your file: Take a clear photo or scan of a handwritten Hebrew sample. <br/> Upload: Click the button below to upload your PDF or Image (JPG/PNG).<br/> Analyze: Our model will process the sample to provide instant feedback.</p>
             </div>
-            <div>
+            {/* <div>
            <input type="file" onChange={file_upload} id="fileUpload" class="file-input" hidden />
 
             <label for="fileUpload" class="button">
@@ -67,8 +70,24 @@ export default function Home() {
                    
             </button>
             <div>
-                <label for="uploaded_file">Uploaded file : {file ? file.name : "None" }</label>
+                <label for="uploaded_file">Choose File{file ? file.name : "None" }</label>
+            </div> */}
+
+            <div className="button-row">
+                <div className="input-wrapper">
+                    <input type="file" onChange={file_upload} id="fileUpload" className="file-input" hidden />
+                    <label htmlFor="fileUpload" className="button">
+                        Choose File
+                    </label>
+                    {/* Shows file name right under the choose button */}
+                    <p className="file-name-text">Selected: {file ? file.name : "None"}</p>
+                </div>
+
+                <button type="submit" onClick={submit_file} className="submit-btn-home">
+                    <span className="btn-text">Submit</span>
+                </button>
             </div>
+
             <div>
                 <h3 for= "results"> Model results: {results? results.data.label : "None"} </h3> 
                 <br/>

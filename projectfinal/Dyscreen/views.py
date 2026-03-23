@@ -14,7 +14,7 @@ from django.conf import settings
 import os
 #model imports!
 from .model_learning import testing_model as ts
-
+#Database connection
 
 
 @api_view(["GET"])
@@ -64,11 +64,10 @@ class file_model_functions(APIView):
             prob,pred_class,label = ts.run_model(file_path)
             print("Model Done ! the prob is  \n",prob)
             
-            return Response({"prob":float(prob),"pred_class":int(pred_class),"label":str(label)},status=200) 
+            return Response({"prob":float(prob.numpy().item()),"pred_class":int(pred_class),"label":str(label)},status=200) ## float(prob) was changed to float(prob.numpy().item())
             
         except Exception as err:
             return Response({
                     "error":"Model failed",
                     "details": str(err)
                 },status = 500)
-        

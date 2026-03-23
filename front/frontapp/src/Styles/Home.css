@@ -1,56 +1,111 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing: border-box;
-}
-body{
-    /* testing fonts until one works (based on device) */
-    font-family:-apple-systems, BlinkMacSystemFont, 'Segoe UI',Roboto, 'Helvetica Neue',Arial, Helvetica, sans-serif;
-    background:#fafbfc;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding:20px;
-    line-height:1.5;    
-}
 
-.file-input {
-  display: none;
+.home-content {
+    max-width: 900px;
+    width: 95%;
+    text-align: center;
+    padding: 40px 20px;
 }
 
 .button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 25px;
-  margin:20px;
-  font-size: 24px;
-  height: 60px;
-  width: 400px;
-  cursor: pointer;
-  color: #fff;
-  background-color: #04AA6D;
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 9px #999;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 25px;
+    margin: 20px;
+    font-size: 24px;
+    width: 100%;
+    max-width: 400px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #04AA6D;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #038d5a;
+    transition: all 0.2s;
 }
 
 .button:active {
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-header{
-    background: #ffff;
-    width:100%;
-    height: 60px;
-    z-index: 1041;
-    position:fixed;
-    right:0;
-    left: 0;
-    top:0;
-    border-bottom: 1px solid #d6d6df;
-    padding:0 24px;
-    margin: 10px;
+    box-shadow: 0 5px #026b44;
+    transform: translateY(4px);
 }
 
+.submit-btn-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 25px;
+    margin: 20px;
+    font-size: 24px;
+    width: 100%;
+    max-width: 400px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #635BFF;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #3d389e;
+    transition: all 0.2s;
+}
+
+.submit-btn-home:active{
+    box-shadow: 0 5px #3d389e;
+    transform: translateY(4px);
+}
+
+.button-row {
+    display: flex;
+    justify-content: center; 
+    align-items: flex-start; 
+    gap: 20px;               
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button, .submit-btn-home {
+    margin: 0; 
+    width: 300px; 
+    height: 60px;
+    font-size: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.content {
+    background: rgba(6, 0, 16, 0.05); 
+    backdrop-filter: blur(10px);         
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 800px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    margin-bottom: 30px;
+    border-color: rgba(36, 40, 96, 0.85);
+}
+
+.content h1 {
+    color: #dadce6;
+    margin-bottom: 20px;
+}
+
+.content p {
+    color: #dadce6;
+    line-height: 1.6;
+}
+
+.file-name-text{
+    color: white;
+}

@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import '../Styles/Login.css' //importing css.
+import Nav_Bar from "../Pages/Nav_Bar";
 
 const BASEURL_login = "http://127.0.0.1:8000/login";
 
@@ -10,40 +11,70 @@ export default function Login() {
     const [email,setemail] = useState("");
     const [password,setpassword] = useState("");
     const [isloged,setloger] = useState(false);
+    const [mode, setMode] = useState("login");
+
+    const [fullname, setFullname] = useState("");
+
+    const toggleMode = (e) => {
+    e.preventDefault(); // Prevents the link from refreshing the page
+    setMode(mode === "login" ? "signup" : "login");
+    };
 
     useEffect(()=>{
         document.getElementById("loader").hidden = true; //making sure loader won't run.
         document.getElementById("welcome back!").hidden = true;
     },[])
 
-    //addresses login.
-    const login_check = async (e)=>{
+    const handleAuth = async (e) => { //Handling the dynamic switch for login and signup
         e.preventDefault();
-        try{
-            document.getElementById("loader").hidden = false;
-            const res = await axios.post(BASEURL_login,{
-                email:'email',
-                password:'password'
-            });
-        setTimeout(() => {
-            alert(res.data.message)//return if login success or not.
-        }, 3000);
-        //window.location.href="/hello_test";
-        //document.getElementById("myElementId").hidden = true;
+        
+        // Decide which URL to hit based on the mode
+        const endpoint = mode === "login" ? "/login" : "/register";
+        
+        // Prepare the data to send
+        const payload = mode === "login" 
+            ? { email, password } 
+            : { email, password, fullname };
 
-        }
-        catch(err){
+        try {
+            document.getElementById("loader").hidden = false;
+            
+            const res = await axios.post(`http://127.0.0.1:8000${endpoint}`, payload);
+            
             setTimeout(() => {
-                 document.getElementById("loader").hidden = true;
-                const errorMsg =err?.response?.data?.error || err.message || "Login Failed";
-                alert(errorMsg); 
-            }, 3000);
-         
+                alert(res.data.message);
+                document.getElementById("loader").hidden = true;
+            }, 1500);
+            
+        } catch (err) {
+            document.getElementById("loader").hidden = true;
+            const errorMsg = err?.response?.data?.error || "Action Failed";
+            alert(errorMsg);
         }
     };
 
-
-    
+    // //addresses login.
+    // const login_check = async (e)=>{
+    //     e.preventDefault();
+    //     try{
+    //         document.getElementById("loader").hidden = false;
+    //         const res = await axios.post(BASEURL_login,{
+    //             email:'email',
+    //             password:'password'
+    //         });
+    //     setTimeout(() => {
+    //         alert(res.data.message)//return if login success or not.
+    //     }, 3000);
+    //     }
+    //     catch(err){
+    //         setTimeout(() => {
+    //              document.getElementById("loader").hidden = true;
+    //             const errorMsg =err?.response?.data?.error || err.message || "Login Failed";
+    //             alert(errorMsg); 
+    //         }, 3000);
+         
+    //     }
+    // };
 
     return (
         <div>
@@ -56,10 +87,33 @@ export default function Login() {
                                 <path d="M8 12h16v2H8v-2zm0 4h16v2H8v-2zm0 4h10v2H8v-2z" fill="white"/>
                             </svg>
                         </div>  
-                    <h1>Sign in to Dashboard</h1>
-                    <p>Welcome Back! Please sign in to continue</p>
+                    <h1>{mode === "login" ? "Welcome back!" : "Create Account"}</h1> {/*this is for the dynamic switch */}
+                    <p>
+                        {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+                        <span onClick={toggleMode} style={{color: '#635bff', cursor: 'pointer', fontWeight: 'bold'}}>
+                            {mode === "login" ? "Click here →" : "Login here"}
+                        </span>
+                    </p>
                     </div>
-                <form class="login-form" id ="LoginForm" novalidate>
+                <form class="login-form" id ="LoginForm" novalidate> {/*This is the part of the input boxes */}
+
+                {/* DYNAMIC FIELD: Only shows during Signup */}
+                    {mode === "signup" && (
+                        <div className="input-group">
+                            <input 
+                                type="text" 
+                                id="fullname" 
+                                name="fullname" 
+                                required 
+                                placeholder=" " 
+                                value={fullname}
+                                onChange={(e) => setFullname(e.target.value)}
+                            />
+                            <label htmlFor="fullname">Full Name</label>
+                            <span className="input-border"></span>
+                        </div>
+                    )}
+                    
                     <div class="input-group">
                         <input type="email" id = "email" name = "email" required autocomplete="email" placeholder =" "></input>
                         <label for="email">Email Address</label>
@@ -92,21 +146,19 @@ export default function Login() {
                     <a href = "#" class="forget-link">Forgot Password</a>
                     
                 </div>
-                <button type="sumbit" onClick={login_check} class="submit-btn" >
-                    <span class="btn-text">Sign in</span>
+                <button type="sumbit" onClick={handleAuth} class="submit-btn" >
+                    <span className="btn-text">
+                        {mode === "login" ? "Sign in" : "Sign up"}
+                    </span>
                     <div class="bth-loader" id="loader" >
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                             <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2" opacity="0.25"/>
                             <path d="M16 9a7 7 0 01-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                                     <animateTransform attributeName="transform" type="rotate" dur="1s" values="0 9 9;360 9 9" repeatCount="indefinite"/>
-                                </path>
+                            </path>
                         </svg>
                     </div>
                 </button>
-                <div class="signup-link">
-                    <span>Don't have an account</span>
-                    <a href="/Re"> Register now!</a>
-                </div>
               
                 <div class="success-message" id="successMessage">
                     <div class="success-icon">
