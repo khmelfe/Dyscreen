@@ -7,17 +7,20 @@ import Nav_Bar from "../Pages/Nav_Bar";
 const BASEURL_login = "http://127.0.0.1:8000/login";
 
 export default function Login() {
-    
-    const [email,setemail] = useState("");
-    const [password,setpassword] = useState("");
+    //state managment
+    const [email,setEmail] = useState("");
+    const [password,setPassword] = useState("");
+    const [fullname,setFullname] = useState("");
     const [isloged,setloger] = useState(false);
     const [mode, setMode] = useState("login");
 
-    const [fullname, setFullname] = useState("");
-
+    //Toggle between login to sign up 
     const toggleMode = (e) => {
     e.preventDefault(); // Prevents the link from refreshing the page
     setMode(mode === "login" ? "signup" : "login");
+    setEmail("");
+    setPassword("");
+    setFullname("");
     };
 
     useEffect(()=>{

@@ -3,8 +3,8 @@ import './AnimatedBackground.css';
 
 const ShapeGrid = ({
   direction = 'diagonal',
-  speed = 0.20,
-  borderColor = '#242860',
+  speed = 0.13,
+  borderColor = '#2428607c',
   squareSize = 40,
   hoverFillColor = '#281763',
   shape = 'hexagon',

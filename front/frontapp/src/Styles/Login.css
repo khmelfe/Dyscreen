@@ -22,7 +22,7 @@ body{
     max-width: 400px;
 }
 .login-card{
-    background:#ffffff;
+    background:rgb(162, 155, 173);
     border-radius: 12px;
     padding:48px 40px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02),0 8px 16px rgba(0,0,0,0.06);
@@ -47,7 +47,7 @@ body{
     letter-spacing: -0.02em;
 }
 .login-header p {
-    color: #8792a2;
+    color: rgb(84, 81, 90);
     font-size: 14px;
     font-weight: 400;
 }
@@ -60,8 +60,8 @@ body{
 
 .input-group input {
     width: 100%;
-    background: #ffffff;
-    border: 1px solid #e3e8ee;
+    background: rgb(162, 155, 173);
+    border: 1px solid rgb(132, 127, 141);
     border-radius: 6px;
     padding: 16px 14px 8px 14px;
     color: #1a1f36;
@@ -85,12 +85,12 @@ body{
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #8792a2;
+    color: rgb(132, 127, 141);
     font-size: 16px;
     font-weight: 400;
     pointer-events: none;
     transition: all 0.2s ease;
-    background: #ffffff;
+    background: rgb(162, 155, 173);
     padding: 0 2px;
 }
 

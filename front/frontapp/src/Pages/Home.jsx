@@ -56,22 +56,9 @@ export default function Home() {
                 <h1>Welcome to DyScreen</h1>
                 <p>We utilize advanced Deep Learning models to help identify learning differences across all age groups. <br/> Early screening is the first step toward personalized support and academic success.</p>
                 <br/>
+                <h3>Steps:</h3>
                 <p>Prepare your file: Take a clear photo or scan of a handwritten Hebrew sample. <br/> Upload: Click the button below to upload your PDF or Image (JPG/PNG).<br/> Analyze: Our model will process the sample to provide instant feedback.</p>
             </div>
-            {/* <div>
-           <input type="file" onChange={file_upload} id="fileUpload" class="file-input" hidden />
-
-            <label for="fileUpload" class="button">
-                Choose File
-            </label>
-            </div>
-           <button type="sumbit" onClick={submit_file} class="submit-btn" >
-                    <span class="btn-text">Submit</span>
-                   
-            </button>
-            <div>
-                <label for="uploaded_file">Choose File{file ? file.name : "None" }</label>
-            </div> */}
 
             <div className="button-row">
                 <div className="input-wrapper">
@@ -89,27 +76,24 @@ export default function Home() {
             </div>
 
             <div>
-                <h3 for= "results"> Model results: {results? results.data.label : "None"} </h3> 
-                <br/>
-                
-                <h3 for= "results"> Likelihood of Dyslexia :  </h3> 
-                <br/>
-                
-             {results && results.data.prob < 50 && (
-                <Progress_bar
-                bgcolor="green"
-                progress= {Number(results.data.prob)  }
-                height={30}
-            />)
-            }
-             {results && results.data.prob > 50 && (
-                <Progress_bar
-                bgcolor="red"
-                progress= {Number(results.data.prob) }
-                height={30}
-            />)
-            }
+            {results && (
+                <div className="results-container">
+                <h3 className="result-label">Screening results: {results.data.label}</h3>
+        
+                <div className="progress-row">
+                    <h3 className="result-label">Likelihood percentage:</h3>
+            
+                    <div className="progress-wrapper">
+                        <Progress_bar
+                            bgcolor={Number(results.data.prob) < 50 ? "green" : "red"}
+                            progress={Number(results.data.prob)}
+                            height={30}
+                        />
+                    </div>
+                </div>
+                </div>
+            )}
             </div>
-            </div>
+        </div>
     )
 }
