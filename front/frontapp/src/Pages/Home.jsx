@@ -43,57 +43,80 @@ export default function Home() {
                 alert(errorMsg); 
             }, 3000);
         }
-    }
+    };
+
+    // Helper to reset the view
+    const handleReset = () => {
+        setresults(null);
+        setfile(null);
+    };
     
     return(
-        <div>
-            <div className= "headerarea">
-                {/* <header className="header">
-                    <h1>Dyscreen</h1>
-                </header> */}
-            </div>
-            <div className = "content">
-                <h1>Welcome to DyScreen</h1>
-                <p>We utilize advanced Deep Learning models to help identify learning differences across all age groups. <br/> Early screening is the first step toward personalized support and academic success.</p>
-                <br/>
-                <h3>Steps:</h3>
-                <p>Prepare your file: Take a clear photo or scan of a handwritten Hebrew sample. <br/> Upload: Click the button below to upload your PDF or Image (JPG/PNG).<br/> Analyze: Our model will process the sample to provide instant feedback.</p>
-            </div>
+        <div className="home-page-container">
 
-            <div className="button-row">
-                <div className="input-wrapper">
-                    <input type="file" onChange={file_upload} id="fileUpload" className="file-input" hidden />
-                    <label htmlFor="fileUpload" className="button">
-                        Choose File
-                    </label>
-                    {/* Shows file name right under the choose button */}
-                    <p className="file-name-text">Selected: {file ? file.name : "None"}</p>
-                </div>
+            {/*If no results*/}
+            {!results ? (
+                <div className="no-results-container">
+                    <div className = "content">
+                        <h1>Welcome to DyScreen</h1>
+                        <p>We utilize advanced Deep Learning models to help identify learning differences across all age groups. <br/> Early screening is the first step toward personalized support and academic success.</p>
+                        <br/>
+                        <h3>Steps:</h3>
+                        <p>Prepare your file: Take a clear photo or scan of a handwritten Hebrew sample. <br/> Upload: Click the button below to upload your PDF or Image (JPG/PNG).<br/> Analyze: Our model will process the sample to provide instant feedback.</p>
+                    </div>
 
-                <button type="submit" onClick={submit_file} className="submit-btn-home">
-                    <span className="btn-text">Submit</span>
-                </button>
-            </div>
+                    <div className="button-row">
+                        <div className="input-wrapper">
+                            <input type="file" onChange={file_upload} id="fileUpload" className="file-input" hidden />
+                            <label htmlFor="fileUpload" className="button">
+                                Choose File
+                            </label>
+                            {/* Shows file name right under the choose button */}
+                            <p className="file-name-text">Selected: {file ? file.name : "None"}</p>
+                        </div>
 
-            <div>
-            {results && (
-                <div className="results-container">
-                <h3 className="result-label">Screening results: {results.data.label}</h3>
-        
-                <div className="progress-row">
-                    <h3 className="result-label">Likelihood percentage:</h3>
-            
-                    <div className="progress-wrapper">
-                        <Progress_bar
-                            bgcolor={Number(results.data.prob) < 50 ? "green" : "red"}
-                            progress={Number(results.data.prob)}
-                            height={30}
-                        />
+                        <button type="submit" onClick={submit_file} className="submit-btn-home">
+                            <span className="btn-text">Submit</span>
+                        </button>
                     </div>
                 </div>
+            ) : (
+                /*If results*/
+                <div className="results-container">
+                    <h1>Analysis Complete</h1><br/>
+                    {/*Left side results*/}
+                    <div className="results-info-side">
+                        <h3 className="result-label">Screening results: {results.data.label}</h3>
+                
+                        <div className="progress-row">
+                            <h3 className="result-label">Likelihood percentage:</h3>
+                    
+                            <div className="progress-wrapper">
+                                <Progress_bar
+                                    bgcolor={Number(results.data.prob) < 50 ? "green" : "red"}
+                                    progress={Number(results.data.prob)}
+                                    height={30}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    {/*Right side images*/}
+                    <div className="results-images-side">
+                        <div className="image-box">
+                            <p>Features selection</p>
+                            {/* <img src={fileURL} alt="Handwriting Sample" /> */}
+                        </div>
+                        <div className="image-box">
+                            <p>Model Heat map</p>
+                            {/* <img src={processedImageURL} alt="Analysis" /> */}
+                        </div>
+                    </div>
+                    
+                    <button onClick={handleReset} className="button-back-btn">
+                            Scan Another Sample
+                    </button>
                 </div>
             )}
-            </div>
         </div>
     )
 }

@@ -1,4 +1,11 @@
 
+.home-page-container {
+     max-width: 900px;
+    width: 95%;
+    text-align: center;
+    padding: 40px 20px;
+}
+
 .home-content {
     max-width: 900px;
     width: 95%;
@@ -56,7 +63,7 @@
     display: flex;
     justify-content: center; 
     align-items: flex-start; 
-    gap: 20px;               
+    gap: 30px;               
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
@@ -85,10 +92,10 @@
 .content {
     background: rgba(6, 0, 16, 0.05); 
     backdrop-filter: blur(10px);         
-    padding: 40px;
+    padding: 70px 60px;
     border-radius: 20px;
-    max-width: 800px;
-    width: 90%;
+    max-width: 1000px;
+    width: 95%;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     text-align: center;
@@ -97,11 +104,13 @@
 }
 
 .content h1 {
+    font-size: 2.5rem;
     color: #dadce6;
     margin-bottom: 20px;
 }
 
 .content p {
+    font-size: 1.2rem;
     color: #dadce6;
     line-height: 1.6;
 }
@@ -116,14 +125,24 @@
 }
 
 .results-container {
-    margin-top: 20px;
-    padding: 15px;
-    color: white;
-    text-align: center;
-    width: 100%;
+    background: rgba(6, 0, 16, 0.05); 
+    backdrop-filter: blur(10px);         
+    padding: 100px 250px;
+    border-radius: 20px;
     max-width: 800px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    margin-bottom: 30px;
+    border-color: rgba(36, 40, 96, 0.85);
+    margin-top: 20px;
+    color: white;
     margin-left: auto;
     margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     animation: fadeIn 0.5s ease-in;
 }
 
@@ -151,6 +170,29 @@
     color: white;
     font-size: 1.2rem;
     margin: 0;
+}
+
+.button-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 25px;
+    margin: 20px;
+    font-size: 24px;
+    width: 100%;
+    max-width: 400px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #04AA6D;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #038d5a;
+    transition: all 0.2s;
+}
+
+.button-back-btn:active {
+    box-shadow: 0 5px #026b44;
+    transform: translateY(4px);
 }
 
 @keyframes fadeIn {
