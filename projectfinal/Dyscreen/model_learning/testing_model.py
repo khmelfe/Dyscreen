@@ -48,7 +48,7 @@ def run_model(image_path):
     model = load_model("Dyscreen/model_learning/iheb_model.h5")
     
     prob,pred_class,label = predict_one(image_path,model,0.5)
-
+    print("well3\n")
     return prob,pred_class,label
 
 

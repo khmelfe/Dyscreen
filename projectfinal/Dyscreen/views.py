@@ -12,8 +12,11 @@ from django.http import JsonResponse
 from  rest_framework.views import APIView
 from django.conf import settings
 import os
+import uuid
+
 #model imports!
 from .model_learning import testing_model as ts
+from .model_learning import feature_extractions as features
 #Database connection
 
 
@@ -44,6 +47,47 @@ class file_model_functions(APIView):
         file_path  = fs.path(filename)        
         return file_path
     
+    def images_features(self, file_path, request):
+        """
+        Runs feature extraction. Returns a dict with:
+          - annotated_url: URL the frontend can load the image from
+          - hpp, merged_lines, count_under_lines, count_above_lines
+        Raises on failure (caller builds the Response).
+        """
+        # Make sure the output directory exists
+        annotated_dir = os.path.join(settings.MEDIA_ROOT, "annotated")
+        os.makedirs(annotated_dir, exist_ok=True)
+
+        # Unique output filename so concurrent uploads don't collide
+        out_name = f"{uuid.uuid4().hex}.png"
+        out_path = os.path.join(annotated_dir, out_name)
+        
+        # Call your existing extraction function.
+        # ADJUST THIS LINE to match your actual signature:
+        #   - If extractions accepts an output path:
+        #       features.extractions(file_path, output_path=out_path)
+        #   - If it returns the saved path:
+        #       out_path = features.extractions(file_path)
+        #   - If it always saves to a fixed location:
+        #       features.extractions(file_path), then move/copy that file to out_path
+        hpp, merged_lines, count_under_lines, count_above_lines = features.extractions(
+            file_path, output_path=out_path
+        )
+        
+        # Build a URL the frontend can use (e.g. /media/annotated/abc123.png)
+        annotated_url = request.build_absolute_uri(
+            settings.MEDIA_URL + "annotated/" + out_name
+        )
+        print("Url",annotated_url)
+        return {
+            "annotated_url": annotated_url,
+            "hpp": hpp.tolist() if hasattr(hpp, "tolist") else hpp,
+            "merged_lines": merged_lines,
+            "count_under_lines": int(count_under_lines),
+            "count_above_lines": int(count_above_lines),
+        }
+
+    
     #Get the file to model
     def post(self,request):
 
@@ -60,14 +104,24 @@ class file_model_functions(APIView):
         #df["profile_img"] = df["profile_img"].notna().astype(intdf["profile_img"] = df["profile_img"].notna().astype(int))         "error":"Invalid file type."
         #     },status = 415)
         try:
-            print("Well\n")
+            
             prob,pred_class,label = ts.run_model(file_path)
+            print("Model finished First part\n")
+            features_data = self.images_features(file_path,request)
             print("Model Done ! the prob is  \n",prob)
             
-            return Response({"prob":float(prob.numpy().item()),"pred_class":int(pred_class),"label":str(label)},status=200) ## float(prob) was changed to float(prob.numpy().item())
+            
+            return Response(
+                {"prob":float(prob.numpy().item()),"pred_class":int(pred_class),"label":str(label),
+                 "features":features_data},status=200) ## float(prob) was changed to float(prob.numpy().item())
             
         except Exception as err:
             return Response({
                     "error":"Model failed",
                     "details": str(err)
                 },status = 500)
+        
+    
+
+
+            
