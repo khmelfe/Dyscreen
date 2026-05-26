@@ -27,3 +27,4 @@ build/
 .vscode/
 .idea/
 projectfinal/Dyscreen/model_learning/iheb_model.h5
+projectfinal/Dyscreen/model_learning/dysgraphia_v3_bilingual_best_test1.keras

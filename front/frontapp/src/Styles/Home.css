@@ -433,7 +433,7 @@
     padding: 30px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: start ;
     gap: 40px;
     border-right: 1px solid rgba(255, 255, 255, 0.15);
     text-align: left;
@@ -606,4 +606,80 @@
     width: 20px;
     height: 3px;
     border-radius: 2px;
+}
+
+.attention-scale {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.attention-scale h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.scale-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.scale-bar {
+    width: 100%;
+    height: 20px;
+    border-radius: 4px;
+    background: linear-gradient(
+        to right,
+        #ff2200 0%,
+        #ff8800 25%,
+        #ffff00 50%,
+        #00aaff 75%,
+        #0022ff 100%
+    );
+}
+
+
+.scale-labels-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
+
+.scale-label {
+    font-size: 12px;
+}
+
+
+.scale-levels {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: 1;
+  padding: 0.4rem 0.4rem;
+}
+
+.level {
+  display: flex;
+  flex-direction: column;
+}
+
+.level-title {
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.level-subtitle {
+  font-size: 0.7rem;
+  color: #cccccc;
+}
+
+.scale-footer {
+  font-size: 0.7rem;
+  color: #aaaaaa;
+  line-height: 1.4;
+  margin: 0;
 }

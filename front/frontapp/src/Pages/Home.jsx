@@ -39,7 +39,7 @@ export default function Home() {
             res.data.prob = (res.data.prob * 100).toFixed(4); 
             
             setresults(res);
-            console.log(res.data.features.annotated_url);
+            console.log(res.data.features.large_gap_count);
             alert("Great sucess \n ", res.pred_class);
             
             
@@ -118,8 +118,11 @@ export default function Home() {
                 <div className="features-details">
                     <h3>Detection Details</h3>
                     <p>Detected lines: {results.data.features.merged_lines.length}</p>
+                    <p>Total Words: {results.data.features.total_words_found}</p>
                     <p>Words above baseline: {results.data.features.count_above_lines}</p>
                     <p>Words below baseline: {results.data.features.count_under_lines}</p>
+                    <p>Word's gaps that above average user's gap :  {results.data.features.large_gap_count} </p> 
+                    
                 </div>
             )}
         </div>
@@ -176,7 +179,55 @@ export default function Home() {
             <div className="image-box">
                 <p>Heatmap</p>
                 {/* TODO: heatmap when ready */}
-                <div className="placeholder-box">Coming soon</div>
+                <div className="placeholder-box"
+                className="zoom-container"
+                onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    e.currentTarget.style.setProperty("--x", `${x}%`);
+                    e.currentTarget.style.setProperty("--y", `${y}%`);
+                }}>
+                   
+                    <img
+                        src = {results.data.heatmap_url}
+                        alt="Detected lines and word boxes"
+                    />
+                </div>
+
+                <div className="attention-scale">
+    <h3>Attention Scale</h3>
+    
+    <div className="scale-bar"></div>
+    
+    <div className="scale-labels-row">
+        <span className="scale-label">1.0</span>
+        <span className="scale-label">0.0</span>
+    </div>
+    
+    <div className="scale-levels">
+        <div className="level">
+            <span className="level-title" style={{ color: "#ff2200" }}>Very High</span>
+            <span className="level-subtitle">Strongest influence</span>
+        </div>
+        <div className="level">
+            <span className="level-title" style={{ color: "#ff8800" }}>High</span>
+            <span className="level-subtitle">Important regions</span>
+        </div>
+        <div className="level">
+            <span className="level-title" style={{ color: "#ffff00" }}>Medium</span>
+            <span className="level-subtitle">Moderate influence</span>
+        </div>
+        <div className="level">
+            <span className="level-title" style={{ color: "#00aaff" }}>Low</span>
+            <span className="level-subtitle">Lower influence</span>
+        </div>
+        <div className="level">
+            <span className="level-title" style={{ color: "#0022ff" }}>Very Low</span>
+            <span className="level-subtitle">Background / minimal</span>
+        </div>
+    </div>
+</div>
             </div>
         </div>
     </div>

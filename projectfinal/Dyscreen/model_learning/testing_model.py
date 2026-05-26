@@ -39,13 +39,27 @@ def preprocess_image(image_path, size=(128, 128)):
               
         except Exception as err:
             print(err)
-            
+
+def prepare_image_for_model(image_path):
+
+    img = preprocess_image(image_path, size=(128, 128))
+    
+    img = img / 255.0
+
+    img = np.expand_dims(img, axis=-1)
+
+    img = np.expand_dims(img, axis=0)
+
+    img3 = np.repeat(img, 3, axis=-1)
+
+    return img3
+
 def preprocess_image_from_bytes(file_bytes, size=(128, 128)):
     image = cv2.decode_image_from_bytes(file_bytes)
     return image
-def run_model(image_path):
+def run_model(image_path,model):
     
-    model = load_model("Dyscreen/model_learning/iheb_model.h5")
+    
     
     prob,pred_class,label = predict_one(image_path,model,0.5)
     print("well3\n")
