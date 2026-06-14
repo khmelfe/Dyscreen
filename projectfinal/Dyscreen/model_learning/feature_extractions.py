@@ -265,7 +265,7 @@ def get_horizontal_projection(image_path,output_path="line_check.jpg"):
     print("Amount of Spaces between words:", len(spaces))
     print("Words spaces that are above average:", large_gap_count)
     total_words = count_under_lines + count_above_lines + count_normal_lines
-    return hpp, merged_lines, count_under_lines, count_above_lines,len(spaces),large_gap_count,total_words
+    return hpp, merged_lines, count_under_lines, count_above_lines,len(spaces),large_gap_count,total_words,avg_space
 
 
 def extractions(file_path,output_path="line_detection_check.jpg"):

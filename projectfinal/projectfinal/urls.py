@@ -25,5 +25,6 @@ urlpatterns = [
     path('hello/', hello),
     path('ping-mongo', ping_mongo),
     path('upload_file',file_model_functions.as_view())
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

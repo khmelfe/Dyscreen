@@ -28,3 +28,5 @@ build/
 .idea/
 projectfinal/Dyscreen/model_learning/iheb_model.h5
 projectfinal/Dyscreen/model_learning/dysgraphia_v3_bilingual_best_test1.keras
+projectfinal/Dyscreen/model_learning/dysgraphia_R2CNN_TRPN_hebrew_finetuned.keras
+projectfinal/Dyscreen/model_learning/dysgraphia_v3_bilingual_best_test2.keras

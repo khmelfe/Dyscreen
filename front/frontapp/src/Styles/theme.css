@@ -1,0 +1,200 @@
+:root {
+  --font-size: 16px;
+  --background: #F0F7FF;
+  --background-rgb: 240 247 255;
+  --foreground: #0F2137;
+  --foreground-rgb: 15 33 55;
+  --card: #FFFFFF;
+  --card-rgb: 255 255 255;
+  --card-foreground: #0F2137;
+  --card-foreground-rgb: 15 33 55;
+  --popover: #FFFFFF;
+  --popover-rgb: 255 255 255;
+  --popover-foreground: #0F2137;
+  --popover-foreground-rgb: 15 33 55;
+  --primary: #0284C7;
+  --primary-rgb: 2 132 199;
+  --primary-foreground: #FFFFFF;
+  --primary-foreground-rgb: 255 255 255;
+  --secondary: #E0F2FE;
+  --secondary-rgb: 224 242 254;
+  --secondary-foreground: #0369A1;
+  --secondary-foreground-rgb: 3 105 161;
+  --muted: #EFF6FF;
+  --muted-rgb: 239 246 255;
+  --muted-foreground: #5B7A96;
+  --muted-foreground-rgb: 91 122 150;
+  --accent: #0D9488;
+  --accent-rgb: 13 148 136;
+  --accent-foreground: #FFFFFF;
+  --accent-foreground-rgb: 255 255 255;
+  --destructive: #DC2626;
+  --destructive-rgb: 220 38 38;
+  --destructive-foreground: #FFFFFF;
+  --destructive-foreground-rgb: 255 255 255;
+  --border: rgb(225 238 247);
+  --border-rgb: 225 238 247;
+  --input: transparent;
+  --input-rgb: 225 238 247;
+  --input-background: #F0F7FF;
+  --input-background-rgb: 240 247 255;
+  --switch-background: #93C5FD;
+  --font-weight-medium: 600;
+  --font-weight-normal: 400;
+  --ring: #0284C7;
+  --ring-rgb: 2 132 199;
+  --chart-1: #0284C7;
+  --chart-1-rgb: 2 132 199;
+  --chart-2: #0D9488;
+  --chart-2-rgb: 13 148 136;
+  --chart-3: #7C3AED;
+  --chart-3-rgb: 124 58 237;
+  --chart-4: #F59E0B;
+  --chart-4-rgb: 245 158 11;
+  --chart-5: #EF4444;
+  --chart-5-rgb: 239 68 68;
+  --radius: 0.75rem;
+  --sidebar: #FFFFFF;
+  --sidebar-rgb: 255 255 255;
+  --sidebar-foreground: #0F2137;
+  --sidebar-foreground-rgb: 15 33 55;
+  --sidebar-primary: #0284C7;
+  --sidebar-primary-rgb: 2 132 199;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-primary-foreground-rgb: 255 255 255;
+  --sidebar-accent: #E0F2FE;
+  --sidebar-accent-rgb: 224 242 254;
+  --sidebar-accent-foreground: #0284C7;
+  --sidebar-accent-foreground-rgb: 2 132 199;
+  --sidebar-border: rgb(232 241 248);
+  --sidebar-border-rgb: 232 241 248;
+  --sidebar-ring: #0284C7;
+  --sidebar-ring-rgb: 2 132 199;
+}
+
+.dark {
+  --background: #0A1628;
+  --background-rgb: 10 22 40;
+  --foreground: #E2EBF6;
+  --foreground-rgb: 226 235 246;
+  --card: #112036;
+  --card-rgb: 17 32 54;
+  --card-foreground: #E2EBF6;
+  --card-foreground-rgb: 226 235 246;
+  --popover: #112036;
+  --popover-rgb: 17 32 54;
+  --popover-foreground: #E2EBF6;
+  --popover-foreground-rgb: 226 235 246;
+  --primary: #38BDF8;
+  --primary-rgb: 56 189 248;
+  --primary-foreground: #0A1628;
+  --primary-foreground-rgb: 10 22 40;
+  --secondary: #1A3352;
+  --secondary-rgb: 26 51 82;
+  --secondary-foreground: #90C8F0;
+  --secondary-foreground-rgb: 144 200 240;
+  --muted: #152840;
+  --muted-rgb: 21 40 64;
+  --muted-foreground: #7FA8CC;
+  --muted-foreground-rgb: 127 168 204;
+  --accent: #14B8A6;
+  --accent-rgb: 20 184 166;
+  --accent-foreground: #0A1628;
+  --accent-foreground-rgb: 10 22 40;
+  --destructive: #EF4444;
+  --destructive-rgb: 239 68 68;
+  --destructive-foreground: #FFFFFF;
+  --destructive-foreground-rgb: 255 255 255;
+  --border: rgb(32 53 73);
+  --border-rgb: 32 53 73;
+  --input: rgb(28 48 70);
+  --input-rgb: 28 48 70;
+  --input-background: #152840;
+  --input-background-rgb: 21 40 64;
+  --switch-background: #1A3352;
+  --ring: #38BDF8;
+  --ring-rgb: 56 189 248;
+  --font-weight-medium: 600;
+  --font-weight-normal: 400;
+  --chart-1: #38BDF8;
+  --chart-1-rgb: 56 189 248;
+  --chart-2: #14B8A6;
+  --chart-2-rgb: 20 184 166;
+  --chart-3: #A78BFA;
+  --chart-3-rgb: 167 139 250;
+  --chart-4: #FCD34D;
+  --chart-4-rgb: 252 211 77;
+  --chart-5: #F87171;
+  --chart-5-rgb: 248 113 113;
+  --sidebar: #0D1E35;
+  --sidebar-rgb: 13 30 53;
+  --sidebar-foreground: #E2EBF6;
+  --sidebar-foreground-rgb: 226 235 246;
+  --sidebar-primary: #38BDF8;
+  --sidebar-primary-rgb: 56 189 248;
+  --sidebar-primary-foreground: #0A1628;
+  --sidebar-primary-foreground-rgb: 10 22 40;
+  --sidebar-accent: #1A3352;
+  --sidebar-accent-rgb: 26 51 82;
+  --sidebar-accent-foreground: #90C8F0;
+  --sidebar-accent-foreground-rgb: 144 200 240;
+  --sidebar-border: rgb(27 48 70);
+  --sidebar-border-rgb: 27 48 70;
+  --sidebar-ring: #38BDF8;
+  --sidebar-ring-rgb: 56 189 248;
+}
+
+* {
+  @apply border-border outline-ring/50;
+}
+
+body {
+  @apply bg-background text-foreground;
+  font-family: 'Inter', sans-serif;
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+h1 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+h3 {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+h4 {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+label {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+button {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+input {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5;
+}

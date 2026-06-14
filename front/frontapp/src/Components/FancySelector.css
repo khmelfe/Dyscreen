@@ -1,0 +1,66 @@
+#labelselect {
+    color:rgb(222, 222, 217);
+    background-color: rgb(1, 1, 1,0);
+    width: 30vw;
+    padding: 10px 10px;
+    
+}
+
+#model{
+  
+    border: 2px solid #dddddd;
+    transition: 0.4s;
+    background: #eeeeee;
+    padding: 10px;
+}
+
+
+select,::picker(select){
+    appearance:base-select;
+    border:none;
+    
+}
+
+select:hover,select:focus{
+    background-color: #dddddd;
+}
+
+select::picker-icon{
+    color:#999999;
+    transition: 0.4s rotate;
+}
+
+select:open::picker-icon{
+    rotate: 180deg;
+}
+
+option{
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+
+     border: 2px solid #dddddd;
+    background: #eeeeee;
+    padding: 10px;
+    transition: 0.4s;
+}
+
+option:first-of-type {
+    border-radius: 8px 8px 0 0;;
+}
+
+option:last-of-type {
+    border-radius: 0 0 8px 8px;
+}
+
+option:not(option:last-of-type){
+    border-bottom: none;
+}
+
+option:nth-of-type(odd){
+    background: white;
+}
+
+option:hover,option:focus{
+    background: rgb(162, 160, 221);
+}

@@ -3,10 +3,12 @@ import React, { useState, useEffect } from "react";
 import   '../Styles/Home.css'
 import Progress_bar from "../Components/Progressbar"
 import Nav_Bar from "../Pages/Nav_Bar";
+import FancySelector from "../Components/FancySelector"
 const BASE_URL_UPLOAD = "http://127.0.0.1:8000/upload_file";
 
 export default function Home() {
     const [file,setfile]= useState(null);
+    const [model,setmodel] = useState("CNN_LSTM");
     const [results,setresults]= useState(null);
     const [loading,setLoading] = useState(false); //loading .
     const file_upload = (e)=>{
@@ -27,12 +29,19 @@ export default function Home() {
             alert("Please Choose a file first");
             return ;
         }
+        const selectedmodel = model 
+        console.log("Model selected ",selectedmodel);
         setLoading(true);
         const dataForm = new FormData()
         dataForm.append(
             "myfile",
-            file,file.name
+            file,file.name,
+            
         )
+        dataForm.append(
+            "model",selectedmodel
+        )
+        console.log(dataForm);
         try{
             const res = await axios.post(BASE_URL_UPLOAD,dataForm)
             console.log(res.data.prob)
@@ -75,7 +84,7 @@ export default function Home() {
                         <h3>Steps:</h3>
                         <p>Prepare your file: Take a clear photo or scan of a handwritten Hebrew sample. <br/> Upload: Click the button below to upload your PDF or Image (JPG/PNG).<br/> Analyze: Our model will process the sample to provide instant feedback.</p>
                     </div>
-
+                        
                     <div className="button-row">
                         <div className="input-wrapper">
                             <input type="file" onChange={file_upload} id="fileUpload" className="file-input" hidden />
@@ -83,15 +92,21 @@ export default function Home() {
                                 Choose File
                             </label>
                             {/* Shows file name right under the choose button */}
+                            <br/>
                             <p className="file-name-text">Selected: {file ? file.name : "None"}</p>
+                           
                         </div>
-
+                        
                         <button type="submit" onClick={submit_file} className="submit-btn-home">
                             <span className="btn-text">{loading ? "Analyzing..." : "Submit"}</span>
                             
                         </button>
+                        
                     </div>
+                                       
+                     <FancySelector value={model} onChange={setmodel} />
                 </div>
+                
             ) : (
                 <div className="results-container">
     <h1>Analysis Complete</h1>
@@ -100,6 +115,7 @@ export default function Home() {
         {/* LEFT: text info */}
         <div className="results-left">
             <div className="info-top">
+                <h2 className="result-label">Model Used : {model}</h2>
                 <h3 className="result-label">Screening result: {results.data.label}</h3>
 
                 <div className="progress-row">

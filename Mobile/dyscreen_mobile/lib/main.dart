@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -12,6 +11,21 @@ const String _samplePromptText =
     'הטכנולוגיה המודרנית משנה את הדרך שבה אנו לומדים ומתקשרים זה עם זה בכל יום. בעזרת מחשבים וטלפונים חכמים, אפשר למצוא מידע במהירות, לכתוב סיפורים מעניינים ולשתף תמונות עם חברים רחוקים. למרות השינויים הרבים, חשוב מאוד להמשיך לתרגל גם כתיבה ביד, כיוון שהיא עוזרת לנו לפתח את המחשבה, הזיכרון והיצירתיות שלנו. ';
 const String _drawingInstructionsText =
     'Use the tablet pen only. Copy the text below exactly as shown, then tap Use sample.';
+
+abstract final class _AppColors {
+  static const background = Color(0xFFF0F7FF);
+  static const foreground = Color(0xFF0F2137);
+  static const card = Color(0xFFFFFFFF);
+  static const primary = Color(0xFF0284C7);
+  static const primarySoft = Color(0xFFE0F2FE);
+  static const accent = Color(0xFF0D9488);
+  static const accentSoft = Color(0xFFE6FFFB);
+  static const muted = Color(0xFFEFF6FF);
+  static const mutedText = Color(0xFF5B7A96);
+  static const border = Color(0xFFE1EEF7);
+  static const warning = Color(0xFFF59E0B);
+  static const danger = Color(0xFFEF4444);
+}
 
 void main() {
   runApp(const DyscreenApp());
@@ -28,11 +42,34 @@ class DyscreenApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF635BFF),
-          brightness: Brightness.dark,
+          seedColor: _AppColors.primary,
+          brightness: Brightness.light,
+          primary: _AppColors.primary,
+          secondary: _AppColors.accent,
+          surface: _AppColors.card,
         ),
-        scaffoldBackgroundColor: const Color(0xFF080817),
+        scaffoldBackgroundColor: _AppColors.background,
         fontFamily: Platform.isIOS ? 'SF Pro Display' : null,
+        textTheme: ThemeData.light().textTheme.apply(
+          bodyColor: _AppColors.foreground,
+          displayColor: _AppColors.foreground,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: _AppColors.background,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: _AppColors.border),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: _AppColors.border),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: _AppColors.primary, width: 2),
+          ),
+        ),
       ),
       home: const DyscreenHomePage(),
     );
@@ -46,10 +83,8 @@ class DyscreenHomePage extends StatefulWidget {
   State<DyscreenHomePage> createState() => _DyscreenHomePageState();
 }
 
-class _DyscreenHomePageState extends State<DyscreenHomePage>
-    with SingleTickerProviderStateMixin {
+class _DyscreenHomePageState extends State<DyscreenHomePage> {
   late final TextEditingController _apiBaseController;
-  late final AnimationController _backgroundController;
   PlatformFile? _selectedFile;
   AnalysisResult? _result;
   bool _isUploading = false;
@@ -59,15 +94,10 @@ class _DyscreenHomePageState extends State<DyscreenHomePage>
   void initState() {
     super.initState();
     _apiBaseController = TextEditingController(text: _defaultApiBaseUrl());
-    _backgroundController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 24),
-    )..repeat();
   }
 
   @override
   void dispose() {
-    _backgroundController.dispose();
     _apiBaseController.dispose();
     super.dispose();
   }
@@ -200,150 +230,61 @@ class _DyscreenHomePageState extends State<DyscreenHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: _AnimatedShapeGrid(animation: _backgroundController),
-          ),
-          SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final isWide = constraints.maxWidth >= 900;
-                return CustomScrollView(
-                  slivers: [
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isWide ? 48 : 20,
-                        vertical: isWide ? 34 : 20,
-                      ),
-                      sliver: SliverToBoxAdapter(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 1280),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const _AppHeader(),
-                              SizedBox(height: isWide ? 32 : 22),
-                              if (_result == null)
-                                _UploadSurface(
-                                  isWide: isWide,
-                                  selectedFile: _selectedFile,
-                                  apiBaseController: _apiBaseController,
-                                  isUploading: _isUploading,
-                                  error: _error,
-                                  onPickFile: _pickFile,
-                                  onDrawSample: _drawSample,
-                                  onSubmit: _submitFile,
-                                )
-                              else
-                                _ResultsSurface(
-                                  isWide: isWide,
-                                  result: _result!,
-                                  onReset: _reset,
-                                ),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth >= 900;
+            return CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isWide ? 44 : 18,
+                    vertical: isWide ? 26 : 16,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1060),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const _AppHeader(),
+                            SizedBox(height: isWide ? 54 : 34),
+                            if (_result == null)
+                              _UploadSurface(
+                                isWide: isWide,
+                                selectedFile: _selectedFile,
+                                apiBaseController: _apiBaseController,
+                                isUploading: _isUploading,
+                                error: _error,
+                                onPickFile: _pickFile,
+                                onDrawSample: _drawSample,
+                                onSubmit: _submitFile,
+                              )
+                            else
+                              _ResultsSurface(
+                                isWide: isWide,
+                                result: _result!,
+                                onReset: _reset,
+                              ),
+                            if (_result == null) ...[
+                              const SizedBox(height: 42),
+                              const _HowItWorksSection(),
+                              const SizedBox(height: 28),
+                              const _DisclaimerCard(),
                             ],
-                          ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
-  }
-}
-
-class _AnimatedShapeGrid extends StatelessWidget {
-  const _AnimatedShapeGrid({required this.animation});
-
-  final Animation<double> animation;
-
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: AnimatedBuilder(
-        animation: animation,
-        builder: (context, _) {
-          return CustomPaint(
-            painter: _ShapeGridPainter(progress: animation.value),
-            size: Size.infinite,
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _ShapeGridPainter extends CustomPainter {
-  const _ShapeGridPainter({required this.progress});
-
-  final double progress;
-
-  static const double _hexSize = 40;
-  static const Color _baseColor = Color(0xFF060010);
-  static const Color _lineColor = Color(0x7C242860);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = _baseColor);
-
-    final hexHoriz = _hexSize * 1.5;
-    final hexVert = _hexSize * math.sqrt(3);
-    final offsetDistance = progress * hexHoriz * 2;
-    final offsetX = (-offsetDistance) % (hexHoriz * 2);
-    final offsetY = (-progress * hexVert) % hexVert;
-    final colShift = (offsetDistance / hexHoriz).floor();
-    final cols = (size.width / hexHoriz).ceil() + 4;
-    final rows = (size.height / hexVert).ceil() + 4;
-    final stroke = Paint()
-      ..color = _lineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    for (var col = -2; col < cols; col++) {
-      for (var row = -2; row < rows; row++) {
-        final cx = col * hexHoriz + offsetX;
-        final cy =
-            row * hexVert +
-            ((col + colShift).isOdd ? hexVert / 2 : 0) +
-            offsetY;
-        canvas.drawPath(_hexPath(Offset(cx, cy)), stroke);
-      }
-    }
-
-    final vignette = Paint()
-      ..shader = ui.Gradient.radial(
-        Offset(size.width / 2, size.height / 2),
-        math.sqrt(size.width * size.width + size.height * size.height) / 2,
-        const [Color(0x00000000), Color(0x33000000)],
-      );
-    canvas.drawRect(Offset.zero & size, vignette);
-  }
-
-  Path _hexPath(Offset center) {
-    final path = Path();
-    for (var i = 0; i < 6; i++) {
-      final angle = math.pi / 3 * i;
-      final point = Offset(
-        center.dx + _hexSize * math.cos(angle),
-        center.dy + _hexSize * math.sin(angle),
-      );
-      if (i == 0) {
-        path.moveTo(point.dx, point.dy);
-      } else {
-        path.lineTo(point.dx, point.dy);
-      }
-    }
-    return path..close();
-  }
-
-  @override
-  bool shouldRepaint(covariant _ShapeGridPainter oldDelegate) {
-    return oldDelegate.progress != progress;
   }
 }
 
@@ -353,43 +294,54 @@ class _AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      // children: [
-      //   Container(
-      //     width: 48,
-      //     height: 48,
-      //     decoration: BoxDecoration(
-      //       color: const Color(0xFF635BFF),
-      //       borderRadius: BorderRadius.circular(8),
-      //       boxShadow: const [
-      //         BoxShadow(
-      //           color: Color(0x552E28C6),
-      //           blurRadius: 24,
-      //           offset: Offset(0, 12),
-      //         ),
-      //       ],
-      //     ),
-      //     child: const Icon(Icons.subject_rounded, color: Colors.white),
-      //   ),
-      //   const SizedBox(width: 14),
-      //   const Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       Text(
-      //         'DyScreen',
-      //         style: TextStyle(
-      //           fontSize: 28,
-      //           fontWeight: FontWeight.w800,
-      //           letterSpacing: 0,
-      //         ),
-      //       ),
-      //       SizedBox(height: 2),
-      //       Text(
-      //         'Handwriting screening for tablet workflows',
-      //         style: TextStyle(color: Color(0xFFB9C0D7), fontSize: 14),
-      //       ),
-      //     ],
-      //   ),
-      // ],
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: _AppColors.primary,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(
+            Icons.psychology_rounded,
+            size: 20,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(width: 10),
+        const Text(
+          'DyScreen',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0,
+          ),
+        ),
+        const Spacer(),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: _AppColors.card,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: _AppColors.border),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.shield_outlined, size: 16, color: _AppColors.primary),
+              SizedBox(width: 6),
+              Text(
+                'Screening Tool',
+                style: TextStyle(
+                  color: _AppColors.mutedText,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -417,128 +369,123 @@ class _UploadSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final intro = _GlassPanel(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text(
-            'Welcome to DyScreen',
-            style: TextStyle(
-              fontSize: 45,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
+    final intro = Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: const [
+        _StatusPill(),
+        SizedBox(height: 18),
+        _HeroTitle(),
+        SizedBox(height: 16),
+        Text(
+          'Upload a handwriting sample or write directly on the tablet canvas. DyScreen analyzes handwriting patterns and returns visual screening feedback in under 30 seconds.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: _AppColors.mutedText,
+            fontSize: 16,
+            height: 1.65,
           ),
-          const SizedBox(height: 18),
-          const Text(
-            """We utilize advanced Deep Learning models to help identify learning differences across all age groups.
-Early screening is the first step toward personalized support and academic success.
-
-Steps:
-Prepare your file: Take a clear photo or scan of a handwritten Hebrew sample.
-Upload: Click the button below to upload your PDF or Image (JPG/PNG).
-Analyze: Our model will process the sample to provide instant feedback.
-
-""",
-            style: TextStyle(
-              color: Color(0xFFDDE2F2),
-
-              fontSize: 20,
-              height: 1.55,
-            ),
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: const [
-              _StepPill(icon: Icons.document_scanner_rounded, text: 'Prepare'),
-              _StepPill(icon: Icons.cloud_upload_rounded, text: 'Upload'),
-              _StepPill(icon: Icons.analytics_rounded, text: 'Analyze'),
-            ],
-          ),
-        ],
-      ),
+        ),
+        SizedBox(height: 22),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          alignment: WrapAlignment.center,
+          children: [
+            _StepPill(icon: Icons.bolt_rounded, text: 'AI Detection'),
+            _StepPill(icon: Icons.bar_chart_rounded, text: '8 Metrics'),
+            _StepPill(icon: Icons.visibility_rounded, text: 'Heatmaps'),
+            _StepPill(icon: Icons.trending_up_rounded, text: 'Risk Score'),
+          ],
+        ),
+      ],
     );
 
     final controls = _GlassPanel(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            'Sample upload',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+            'New Analysis',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
+          const Text(
+            'Choose how you want to provide the handwriting sample.',
+            style: TextStyle(color: _AppColors.mutedText, fontSize: 14),
+          ),
+          const SizedBox(height: 18),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final twoColumns = constraints.maxWidth >= 560;
+              final uploadCard = _ModeActionCard(
+                icon: Icons.upload_rounded,
+                iconColor: _AppColors.primary,
+                iconBackground: _AppColors.primarySoft,
+                title: 'Upload Image',
+                description:
+                    'Select a clear photo, scan, PNG, JPG, JPEG, or PDF.',
+                bullets: const ['From files', 'Camera scans', 'PDF support'],
+                onTap: isUploading ? null : onPickFile,
+              );
+              final drawCard = _ModeActionCard(
+                icon: Icons.draw_rounded,
+                iconColor: _AppColors.accent,
+                iconBackground: _AppColors.accentSoft,
+                title: 'Write Directly',
+                description:
+                    'Use the tablet pen to copy the Hebrew sample on canvas.',
+                bullets: const ['Stylus input', 'Undo / clear', 'Save sample'],
+                onTap: isUploading ? null : onDrawSample,
+              );
+
+              if (twoColumns) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: uploadCard),
+                    const SizedBox(width: 14),
+                    Expanded(child: drawCard),
+                  ],
+                );
+              }
+
+              return Column(
+                children: [uploadCard, const SizedBox(height: 14), drawCard],
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          _SelectedFileTile(file: selectedFile),
+          const SizedBox(height: 14),
           TextField(
             controller: apiBaseController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'API host',
               hintText: 'http://127.0.0.1:8000',
-              prefixIcon: const Icon(Icons.dns_rounded),
-              filled: true,
-              fillColor: const Color(0x1AFFFFFF),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Color(0x334D5B86)),
-              ),
+              prefixIcon: Icon(Icons.dns_rounded),
             ),
           ),
-          const SizedBox(height: 8),
-          _SelectedFileTile(file: selectedFile),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: isUploading ? null : onPickFile,
-                  icon: const Icon(Icons.attach_file_rounded),
-                  label: const Text('Choose file'),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF04AA6D),
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(58),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: isUploading ? null : onDrawSample,
-                  icon: const Icon(Icons.draw_rounded),
-                  label: const Text('Draw sample'),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF2F7DF6),
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(58),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           FilledButton.icon(
             onPressed: isUploading ? null : onSubmit,
             icon: isUploading
                 ? const SizedBox(
                     width: 18,
                     height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
                   )
-                : const Icon(Icons.play_arrow_rounded),
-            label: Text(isUploading ? 'Analyzing...' : 'Submit'),
+                : const Icon(Icons.send_rounded),
+            label: Text(isUploading ? 'Analyzing...' : 'Analyze Handwriting'),
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF635BFF),
+              backgroundColor: _AppColors.primary,
               foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(58),
+              minimumSize: const Size.fromHeight(56),
+              textStyle: const TextStyle(fontWeight: FontWeight.w800),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
@@ -558,7 +505,7 @@ Analyze: Our model will process the sample to provide instant feedback.
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               intro,
-              const SizedBox(height: 18),
+              const SizedBox(height: 32),
               controls,
               const SizedBox(height: 18),
             ],
@@ -570,10 +517,302 @@ Analyze: Our model will process the sample to provide instant feedback.
     return Column(
       children: [
         intro,
-        const SizedBox(height: 8),
+        const SizedBox(height: 30),
         controls,
         const SizedBox(height: 8),
       ],
+    );
+  }
+}
+
+class _StatusPill extends StatelessWidget {
+  const _StatusPill();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: _AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.shield_outlined, size: 16, color: _AppColors.primary),
+          SizedBox(width: 8),
+          Text(
+            'Screening Tool - Not a Medical Diagnosis',
+            style: TextStyle(
+              color: _AppColors.primary,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroTitle extends StatelessWidget {
+  const _HeroTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text(
+          'AI-Powered',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 42,
+            height: 1.12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0,
+          ),
+        ),
+        ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [_AppColors.primary, _AppColors.accent],
+          ).createShader(bounds),
+          child: const Text(
+            'Dysgraphia Screening',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 42,
+              height: 1.12,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ModeActionCard extends StatelessWidget {
+  const _ModeActionCard({
+    required this.icon,
+    required this.iconColor,
+    required this.iconBackground,
+    required this.title,
+    required this.description,
+    required this.bullets,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final Color iconBackground;
+  final String title;
+  final String description;
+  final List<String> bullets;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: _AppColors.card,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: onTap == null ? _AppColors.border : _AppColors.border,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: iconBackground,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, color: iconColor, size: 28),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                description,
+                style: const TextStyle(
+                  color: _AppColors.mutedText,
+                  height: 1.45,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 14),
+              for (final bullet in bullets) ...[
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      size: 15,
+                      color: _AppColors.accent,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      bullet,
+                      style: const TextStyle(
+                        color: _AppColors.mutedText,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                if (bullet != bullets.last) const SizedBox(height: 6),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HowItWorksSection extends StatelessWidget {
+  const _HowItWorksSection();
+
+  @override
+  Widget build(BuildContext context) {
+    const steps = [
+      ('01', 'Submit Sample', 'Upload a photo or write directly on canvas.'),
+      ('02', 'Feature Extraction', 'The AI extracts handwriting metrics.'),
+      ('03', 'Classification', 'The model predicts dysgraphia risk.'),
+      ('04', 'Explainability', 'Heatmaps highlight decision regions.'),
+    ];
+
+    return _GlassPanel(
+      child: Column(
+        children: [
+          const Text(
+            'How it works',
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 20),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columns = constraints.maxWidth >= 760 ? 4 : 2;
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: steps.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                  childAspectRatio: columns == 4 ? 1.05 : 1.25,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemBuilder: (context, index) {
+                  final step = steps[index];
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: _AppColors.background,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: _AppColors.border),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: _AppColors.primarySoft,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            step.$1,
+                            style: const TextStyle(
+                              color: _AppColors.primary,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          step.$2,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          step.$3,
+                          style: const TextStyle(
+                            color: _AppColors.mutedText,
+                            fontSize: 12,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DisclaimerCard extends StatelessWidget {
+  const _DisclaimerCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFBEB),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFFDE68A)),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            color: _AppColors.warning,
+            size: 20,
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'DyScreen provides screening assistance only and does not replace professional evaluation.',
+              style: TextStyle(
+                color: Color(0xFF92400E),
+                fontSize: 13,
+                height: 1.45,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -591,31 +830,59 @@ class _ResultsSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final highLikelihood = result.probabilityPercent >= 50;
+    final resultTitle = highLikelihood
+        ? 'Potential dysgraphia markers detected'
+        : 'Low marker likelihood detected';
+    final resultCopy = highLikelihood
+        ? 'The analysis identified signs that may warrant further professional review.'
+        : 'The handwriting sample showed fewer markers in the analyzed feature set.';
     final details = _GlassPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Analysis Complete',
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
+          const _DisclaimerCard(),
+          const SizedBox(height: 18),
+          Text(
+            resultTitle,
+            style: const TextStyle(
+              fontSize: 24,
+              height: 1.2,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
+          Text(
+            resultCopy,
+            style: const TextStyle(
+              color: _AppColors.mutedText,
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 18),
           _ResultBadge(result: result),
-          const SizedBox(height: 22),
+          const SizedBox(height: 18),
           _LikelihoodBar(probability: result.probabilityPercent),
           const SizedBox(height: 24),
+          const Text(
+            'Handwriting Metrics',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 12),
           _MetricGrid(features: result.features),
-          const SizedBox(height: 10),
+          const SizedBox(height: 18),
           FilledButton.icon(
             onPressed: onReset,
             icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Scan another sample'),
+            label: const Text('New Analysis'),
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF04AA6D),
+              backgroundColor: _AppColors.primary,
               foregroundColor: Colors.white,
               minimumSize: const Size.fromHeight(56),
+              textStyle: const TextStyle(fontWeight: FontWeight.w800),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
@@ -627,27 +894,34 @@ class _ResultsSurface extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Feature selection',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          const Row(
+            children: [
+              Icon(Icons.visibility_rounded, color: _AppColors.primary),
+              SizedBox(width: 8),
+              Text(
+                'Visual Analysis',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+              ),
+            ],
           ),
-          const SizedBox(height: 21),
-          _AnnotatedImage(url: result.features.annotatedUrl, height: 230),
-          const SizedBox(height: 21),
-
+          const SizedBox(height: 16),
+          _SectionLabel(icon: Icons.layers_rounded, text: 'Feature selection'),
+          const SizedBox(height: 10),
+          _AnnotatedImage(url: result.features.annotatedUrl, height: 250),
+          const SizedBox(height: 14),
           const _Legend(),
           const SizedBox(height: 22),
-          const Text(
-            'Heatmap',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          const _SectionLabel(
+            icon: Icons.local_fire_department,
+            text: 'Heatmap',
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           _AnnotatedImage(
             url: result.heatmapUrl,
-            height: 230,
+            height: 250,
             fit: BoxFit.fill,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           const _AttentionScale(),
         ],
       ),
@@ -665,6 +939,27 @@ class _ResultsSurface extends StatelessWidget {
     }
 
     return Column(children: [details, const SizedBox(height: 18), images]);
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: _AppColors.primary),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
+        ),
+      ],
+    );
   }
 }
 
@@ -794,16 +1089,21 @@ class _DrawingSamplePageState extends State<_DrawingSamplePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF080817),
+      backgroundColor: _AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 12, 10),
+              decoration: const BoxDecoration(
+                color: _AppColors.card,
+                border: Border(bottom: BorderSide(color: _AppColors.border)),
+              ),
               child: Row(
                 children: [
                   IconButton(
                     tooltip: 'Back',
+                    color: _AppColors.mutedText,
                     onPressed: _isSaving
                         ? null
                         : () => Navigator.of(context).maybePop(),
@@ -817,17 +1117,19 @@ class _DrawingSamplePageState extends State<_DrawingSamplePage> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                   ),
                   IconButton(
                     tooltip: 'Undo',
+                    color: _AppColors.mutedText,
                     onPressed: _isSaving || _strokes.isEmpty ? null : _undo,
                     icon: const Icon(Icons.undo_rounded),
                   ),
                   IconButton(
                     tooltip: 'Clear',
+                    color: _AppColors.mutedText,
                     onPressed: _isSaving || _strokes.isEmpty ? null : _clear,
                     icon: const Icon(Icons.delete_outline_rounded),
                   ),
@@ -843,10 +1145,10 @@ class _DrawingSamplePageState extends State<_DrawingSamplePage> {
                         : const Icon(Icons.check_rounded),
                     label: Text(_isSaving ? 'Saving...' : 'Use sample'),
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF04AA6D),
+                      backgroundColor: _AppColors.accent,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -862,22 +1164,22 @@ class _DrawingSamplePageState extends State<_DrawingSamplePage> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0x2204AA6D),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0x6604AA6D)),
+                        color: _AppColors.accentSoft,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xFFB7F4EC)),
                       ),
                       child: const Row(
                         children: [
                           Icon(
                             Icons.info_outline_rounded,
-                            color: Color(0xFF8CE7C4),
+                            color: _AppColors.accent,
                           ),
                           SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               _drawingInstructionsText,
                               style: TextStyle(
-                                color: Color(0xFFDDE2F2),
+                                color: _AppColors.foreground,
                                 fontSize: 15,
                                 height: 1.35,
                                 fontWeight: FontWeight.w600,
@@ -892,16 +1194,16 @@ class _DrawingSamplePageState extends State<_DrawingSamplePage> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0x1AFFFFFF),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0x334D5B86)),
+                        color: _AppColors.card,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: _AppColors.border),
                       ),
                       child: Text(
                         widget.promptText,
                         textAlign: TextAlign.center,
                         textDirection: TextDirection.rtl,
                         style: const TextStyle(
-                          color: Color(0xFFDDE2F2),
+                          color: _AppColors.foreground,
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           height: 1.4,
@@ -921,14 +1223,21 @@ class _DrawingSamplePageState extends State<_DrawingSamplePage> {
                               );
 
                               return ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(18),
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     border: Border.all(
-                                      color: const Color(0xFFB9C0D7),
+                                      color: _AppColors.border,
                                       width: 2,
                                     ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x140284C7),
+                                        blurRadius: 24,
+                                        offset: Offset(0, 12),
+                                      ),
+                                    ],
                                   ),
                                   child: Listener(
                                     behavior: HitTestBehavior.opaque,
@@ -1073,16 +1382,16 @@ class _GlassPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0x14060010),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0x66364096)),
+        color: _AppColors.card,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _AppColors.border),
         boxShadow: const [
           BoxShadow(
-            color: ui.Color.fromARGB(255, 9, 9, 9),
-            blurRadius: 28,
-            offset: Offset(0, 18),
+            color: Color(0x120284C7),
+            blurRadius: 22,
+            offset: Offset(0, 12),
           ),
         ],
       ),
@@ -1102,16 +1411,23 @@ class _StepPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0x1AFFFFFF),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0x264D5B86)),
+        color: _AppColors.card,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: _AppColors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: const Color(0xFF8CE7C4)),
+          Icon(icon, size: 18, color: _AppColors.primary),
           const SizedBox(width: 8),
-          Text(text, style: const TextStyle(fontWeight: FontWeight.w700)),
+          Text(
+            text,
+            style: const TextStyle(
+              color: _AppColors.foreground,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );
@@ -1128,13 +1444,13 @@ class _SelectedFileTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0x14000000),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0x224D5B86)),
+        color: _AppColors.muted,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: _AppColors.border),
       ),
       child: Row(
         children: [
-          const Icon(Icons.insert_drive_file_rounded, color: Color(0xFF8CE7C4)),
+          const Icon(Icons.insert_drive_file_rounded, color: _AppColors.accent),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -1160,15 +1476,23 @@ class _ErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0x33FF5A5F),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0x80FF5A5F)),
+        color: const Color(0xFFFEF2F2),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFFECACA)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded, color: Color(0xFFFFC7C9)),
+          const Icon(Icons.error_outline_rounded, color: _AppColors.danger),
           const SizedBox(width: 10),
-          Expanded(child: Text(message)),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: Color(0xFF991B1B),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -1187,13 +1511,13 @@ class _ResultBadge extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: highLikelihood
-            ? const Color(0x22FF5A5F)
-            : const Color(0x2204AA6D),
-        borderRadius: BorderRadius.circular(8),
+            ? const Color(0xFFFEF2F2)
+            : const Color(0xFFE6FFFB),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: highLikelihood
-              ? const Color(0x99FF5A5F)
-              : const Color(0x9904AA6D),
+              ? const Color(0xFFFECACA)
+              : const Color(0xFF99F6E4),
         ),
       ),
       child: Row(
@@ -1202,9 +1526,7 @@ class _ResultBadge extends StatelessWidget {
             highLikelihood
                 ? Icons.warning_amber_rounded
                 : Icons.check_circle_outline_rounded,
-            color: highLikelihood
-                ? const Color(0xFFFFA7AA)
-                : const Color(0xFF8CE7C4),
+            color: highLikelihood ? _AppColors.danger : _AppColors.accent,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -1226,9 +1548,7 @@ class _LikelihoodBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = probability < 50
-        ? const Color(0xFF04AA6D)
-        : const Color(0xFFFF5A5F);
+    final color = probability < 50 ? _AppColors.accent : _AppColors.danger;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1238,7 +1558,7 @@ class _LikelihoodBar extends StatelessWidget {
             const Text(
               'Likelihood percentage',
               style: TextStyle(
-                color: Color(0xFFDDE2F2),
+                color: _AppColors.mutedText,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -1254,7 +1574,7 @@ class _LikelihoodBar extends StatelessWidget {
           child: LinearProgressIndicator(
             value: (probability / 100).clamp(0, 1),
             minHeight: 18,
-            backgroundColor: const Color(0x1FFFFFFF),
+            backgroundColor: _AppColors.muted,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),
@@ -1297,9 +1617,9 @@ class _MetricGrid extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: const Color(0x14000000),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0x224D5B86)),
+                color: _AppColors.muted,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: _AppColors.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1310,7 +1630,7 @@ class _MetricGrid extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Color(0xFFB9C0D7),
+                      color: _AppColors.mutedText,
                       fontSize: 12,
                     ),
                   ),
@@ -1350,7 +1670,7 @@ class _AnnotatedImage extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(14),
       child: InteractiveViewer(
         minScale: 0.8,
         maxScale: 4,
@@ -1396,9 +1716,10 @@ class _ImagePlaceholder extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: _AppColors.border),
       ),
-      child: Text(text, style: const TextStyle(color: Color(0xFF22243A))),
+      child: Text(text, style: const TextStyle(color: _AppColors.foreground)),
     );
   }
 }
@@ -1442,7 +1763,10 @@ class _LegendItem extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 7),
-        Text(label, style: const TextStyle(color: Color(0xFFDDE2F2))),
+        Text(
+          label,
+          style: const TextStyle(color: _AppColors.mutedText, fontSize: 12),
+        ),
       ],
     );
   }
@@ -1456,9 +1780,9 @@ class _AttentionScale extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
       decoration: BoxDecoration(
-        color: const Color(0x14000000),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0x224D5B86)),
+        color: _AppColors.muted,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: _AppColors.border),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1466,7 +1790,7 @@ class _AttentionScale extends StatelessWidget {
           Text(
             'Attention Scale',
             textAlign: TextAlign.start,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
           ),
           SizedBox(height: 12),
           _AttentionGradientBar(),
@@ -1593,7 +1917,7 @@ class _AttentionScaleItem extends StatelessWidget {
             subtitle,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Color(0xFFC9C8D3),
+              color: _AppColors.mutedText,
               fontSize: 14,
               height: 1.35,
             ),

@@ -6,9 +6,10 @@ void main() {
     await tester.pumpWidget(const DyscreenApp());
 
     expect(find.text('DyScreen'), findsOneWidget);
-    expect(find.text('Welcome to DyScreen'), findsOneWidget);
-    expect(find.text('Choose file'), findsOneWidget);
-    expect(find.text('Draw sample'), findsOneWidget);
-    expect(find.text('Submit'), findsOneWidget);
+    expect(find.text('AI-Powered'), findsOneWidget);
+    expect(find.text('Dysgraphia Screening'), findsOneWidget);
+    expect(find.text('Upload Image'), findsOneWidget);
+    expect(find.text('Write Directly'), findsOneWidget);
+    expect(find.text('Analyze Handwriting'), findsOneWidget);
   });
 }
