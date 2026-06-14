@@ -307,7 +307,7 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
               lineHeight: 1.15,
             }}
           >
-            AI-Powered{" "}
+            Welcome to{" "}
             <span
               style={{
                 background: "linear-gradient(135deg,#0284C7,#0D9488)",
@@ -315,7 +315,7 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Dysgraphia Screening
+              DyScreen
             </span>
           </h1>
 
@@ -323,17 +323,16 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
             className="text-muted-foreground max-w-lg mx-auto mb-10"
             style={{ fontSize: 16, lineHeight: 1.65 }}
           >
-            Upload a handwriting sample or write directly on canvas. Our AI
-            analyzes patterns and identifies potential dysgraphia markers in
-            under 30 seconds.
+            We utilize advanced Deep Learning models to help identify learning disabilities across all age groups.
+            Early screening is the first step toward personalized support and academic success.
           </p>
 
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             {[
-              { icon: Zap, label: "AI Detection" },
-              { icon: BarChart3, label: "8 Metrics" },
-              { icon: Eye, label: "Heatmap Explanation" },
-              { icon: TrendingUp, label: "Risk Score" },
+              { icon: Zap, label: "Deep learning" },
+              { icon: BarChart3, label: "6 Metrics" },
+              { icon: Eye, label: "Heatmap" },
+              { icon: TrendingUp, label: "Screnning Score" },
             ].map(({ icon: Icon, label }) => (
               <div
                 key={label}
@@ -532,9 +531,9 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { step: "01", title: "Submit Sample", desc: "Upload a photo or write directly on the digital canvas." },
-              { step: "02", title: "Feature Extraction", desc: "The AI extracts 8 quantitative handwriting metrics." },
-              { step: "03", title: "Classification", desc: "A fine-tuned ResNet model predicts dysgraphia risk level." },
+              { step: "01", title: "Submit Sample", desc: "Upload a clear photo or scan of a handwritten Hebrew sample" },
+              { step: "02", title: "Feature Extraction", desc: "The model extracts 6 quantitative handwriting metrics." },
+              { step: "03", title: "Classification", desc: "A fine-tuned CNN model predicts Likelihood percentage of Learning disabilities." },
               { step: "04", title: "Explainability", desc: "Grad-CAM heatmaps highlight the decision-making regions." },
             ].map((item) => (
               <div key={item.step} className="bg-background rounded-2xl p-5 border border-border">
@@ -554,32 +553,30 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
           <div>
             <p className="text-accent uppercase tracking-widest mb-2" style={{ fontSize: 12, fontWeight: 700 }}>About</p>
             <h2 className="text-foreground mb-4" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: "clamp(22px,4vw,32px)" }}>
-              What is dysgraphia?
+              What is a Learning disabilities?
             </h2>
             <p className="text-muted-foreground mb-4" style={{ fontSize: 14, lineHeight: 1.7 }}>
-              Dysgraphia is a learning disability that affects writing abilities. It can manifest as difficulties with spelling, poor handwriting, and putting thoughts on paper. It often co-occurs with dyslexia and ADHD.
+              Learning differences can impact how a person processes information and expresses themselves, often showing up as persistent challenges with writing, reading, spelling, or maintaining focus. Because conditions like dysgraphia, dyslexia, and ADHD frequently overlap, understanding a student's unique profile is essential.
             </p>
             <p className="text-muted-foreground mb-6" style={{ fontSize: 14, lineHeight: 1.7 }}>
-              DyScreen analyzes quantitative features of handwriting — baseline consistency, letter sizing, word spacing, and more — to identify patterns associated with dysgraphia.
+              DyScreen is designed to provide a preliminary screening, giving users a clear initial indication of potential learning and writing challenges.
             </p>
             <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 flex items-start gap-3">
               <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
               <p style={{ fontSize: 13, lineHeight: 1.6 }} className="text-amber-800 dark:text-amber-400">
-                <strong>Disclaimer:</strong> DyScreen provides screening assistance only. Results do not constitute a clinical diagnosis. Always consult a qualified educational specialist or occupational therapist.
+                <strong>Disclaimer:</strong> DyScreen provides first screening assistance only. Results do not constitute a clinical diagnosis. Always consult a qualified educational specialist or occupational therapist.
               </p>
             </div>
           </div>
           <div className="space-y-3">
             <p className="text-foreground mb-1" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 15 }}>Metrics analyzed</p>
             {[
-              { label: "Baseline Consistency", desc: "How well writing stays on the line" },
-              { label: "Word Spacing", desc: "Regularity of gaps between words" },
-              { label: "Letter Size Variation", desc: "Consistency of character height" },
-              { label: "Line Alignment", desc: "Horizontal drift across the page" },
-              { label: "Slant Consistency", desc: "Uniformity of letter lean angle" },
-              { label: "Pen Pressure", desc: "Stroke weight variation (future)" },
-              { label: "Letter Reversals", desc: "b/d, p/q confusion patterns" },
-              { label: "Spatial Planning", desc: "Overall page layout coherence" },
+              { label: "Detected Lines", desc: "Measures the percentage of words that remain stable on the detected writing baseline" },
+              { label: "Total Words", desc: "The total number of words" },
+              { label: "Words Above Baseline", desc: "Counts how many words drifted significantly above the expected line threshold" },
+              { label: "Words Under Baseline", desc: "Counts how many words dipped below the baseline threshold, which can indicate spatial tracking difficulties" },
+              { label: "Average Word Spacing", desc: "The mathematical average distance between words, establishing the writer's baseline spatial layout" },
+              { label: "Above-Average Gaps", desc: "The total spaces above the average gap" },
             ].map((m) => (
               <div key={m.label} className="flex items-start gap-3 p-3 bg-card rounded-xl border border-border">
                 <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
@@ -597,9 +594,9 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-muted-foreground" style={{ fontSize: 12 }}>
           <div className="flex items-center gap-2">
             <Brain className="w-4 h-4 text-primary" />
-            <span>DyScreen · AI Handwriting Screening · 2026</span>
+            <span>DyScreen · Deep Learning Handwriting Screening · 2026</span>
           </div>
-          <p>⚠️ Not a diagnostic tool · For screening purposes only</p>
+          <p>⚠️ Not a diagnostic tool · For preliminary screening purposes only</p>
         </div>
       </footer>
     </div>
@@ -632,7 +629,7 @@ function TopBar({ darkMode, onToggleDark, minimal }) {
             className="hidden sm:block text-muted-foreground"
             style={{ fontSize: 13 }}
           >
-            AI Dysgraphia Screening Platform
+            Deep Learning Dysgraphia Screening Platform
           </p>
         )}
 

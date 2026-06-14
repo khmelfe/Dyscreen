@@ -198,9 +198,9 @@ class file_model_functions(APIView):
         '''
         print(request.data)
         
-        for elem in request.data:
-            elem.get() #file
-            elem = elem.replace("http://127.0.0.1:8000/","")
+        # for elem in request.data:
+        #     elem.get() #file
+        #     elem = elem.replace("http://127.0.0.1:8000/","")
             
         photo_url = request.data.get("photo")
         heatmap_url =request.data.get("heatmap")
