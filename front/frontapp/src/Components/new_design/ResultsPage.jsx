@@ -43,43 +43,12 @@ const radarMetrics = [
 { label: "Pressure", value: 45 }];
 
 
-const explanations = [
-{
-  id: 1,
-  severity: "high",
-  icon: AlertTriangle,
-  title: "Irregular baseline alignment detected",
-  summary: "Writing drifts significantly above and below the expected line.",
-  detail: "The model identified that the text does not maintain a consistent horizontal baseline. Words appear at varying vertical positions, a common marker in dysgraphia. This pattern accounted for ~28% of the model's confidence score.",
-  contribution: 28
-},
-{
-  id: 2,
-  severity: "high",
-  icon: TrendingDown,
-  title: "Large variation in word spacing",
-  summary: "Significant and irregular gaps between words throughout the sample.",
-  detail: "Word spacing analysis revealed gaps ranging from 4 px to 38 px between adjacent words, compared to an expected range of 8–14 px. This extreme variability is associated with difficulties in visual-spatial planning — a key characteristic of dysgraphia.",
-  contribution: 24
-},
-{
-  id: 3,
-  severity: "moderate",
-  icon: Info,
-  title: "Inconsistent letter size across sample",
-  summary: "Letter height varies considerably, particularly in lowercase ascenders.",
-  detail: "Letter height analysis shows a coefficient of variation of 0.41. Specifically, letters b, d, h, l showed the most variability, suggesting working-memory difficulties with letterform templates.",
-  contribution: 19
-},
-{
-  id: 4,
-  severity: "low",
-  icon: CheckCircle,
-  title: "No significant letter reversals detected",
-  summary: "b/d and p/q reversal patterns were not found in this sample.",
-  detail: "The model specifically checked for common reversal patterns (b↔d, p↔q, n↔u). No statistically significant reversals were detected. This is a positive finding that reduces the overall risk score.",
-  contribution: -8
-}];
+
+const Explanitions = {
+  'Low Risk': {Headline: "No significant learning disabilities markers detected" ,bodytext : "The analysis indicates that the handwriting patterns closely align with typical development. Minimal to no indicators of LDs —such as severe baseline drift or highly irregular letter sizing—were found."},
+  'Moderate Risk': {Headline: "Potential learning disabilities markers detected",bodytext :"The analysis identified moderate signs consistent with LDs —such as inconsistent word spacing, baseline drift, and variable letter sizing. These patterns suggest that writing may require significantly more effort than usual. "},
+  'High Risk': {Headline: "Strong learning disabilities markers detected",bodytext:"The analysis identified pronounced, consistent indicators strongly associated with LDs. These include highly irregular letter formations, significant spacing inconsistencies, and severe baseline deviations across the analyzed text."}
+}
 
 
 const severityStyle = {
@@ -133,6 +102,9 @@ export function ResultsPage({ result, darkMode, onToggleDark, onNewAnalysis }) {
     // { label: "Word's gaps that above average user's gap:", value: result.data.features.large_gap_count, status: "moderate",HighestValue:"none" },
     // {label: "Average Spaces Between Words",value :result.data.features.avg_spaces,status:"moderate",HighestValue: " none"}
   ]
+  const date = new Date();
+  const formattedDate = date.toDateString(); 
+
   const numric_only_metrics = [
 
   ]
@@ -183,20 +155,24 @@ export function ResultsPage({ result, darkMode, onToggleDark, onNewAnalysis }) {
               <GaugeChart score={riskScore} />
               <span className={`mt-2 px-3 py-1 rounded-full text-sm ${riskCls}`} style={{ fontWeight: 700, fontSize: 13 }}>{riskLabel}</span>
             </div>
+             
             <div className="flex-1">
+              
               <p className="text-muted-foreground mb-1" style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Analysis 
-                 · May 29, 2026</p>
+                 · {formattedDate}</p>
+              
               <h2 className="text-foreground mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 22 }}>
-                Potential dysgraphia markers detected
+              {Explanitions[riskLabel].Headline}
               </h2>
               <p className="text-muted-foreground mb-4" style={{ fontSize: 14, lineHeight: 1.65 }}>
-                The analysis identified moderate signs consistent with dysgraphia — inconsistent word spacing, baseline drift, and variable letter sizing. These patterns may warrant further professional evaluation.
+               {Explanitions[riskLabel].bodytext}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Stat label="Likelihood" value={`${confidence}%`} color="text-primary" />
                 <Stat label="Metrics Analyzed" value="6" color="text-accent" />
               </div>
             </div>
+             
           </div>
         </div>
 
@@ -281,6 +257,16 @@ export function ResultsPage({ result, darkMode, onToggleDark, onNewAnalysis }) {
           </button> */}
         </div>
       </div>
+      {/* Footer */}
+      <footer className="bg-card border-t border-border py-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-muted-foreground" style={{ fontSize: 12 }}>
+          <div className="flex items-center gap-2">
+            <Brain className="w-4 h-4 text-primary" />
+            <span>DyScreen · Deep Learning Handwriting Screening · 2026</span>
+          </div>
+          <p>⚠️ Not a diagnostic tool · For preliminary screening purposes only</p>
+        </div>
+      </footer>
     </div>);
 
 }
@@ -331,7 +317,7 @@ function GaugeChart({ score }) {
       )}
       <line x1={cx} y1={cy} x2={needleX} y2={needleY} stroke="var(--foreground)" strokeWidth="2.5" strokeLinecap="round" />
       <circle cx={cx} cy={cy} r="4" fill="var(--foreground)" />
-      <text x={cx} y={84} textAnchor="middle" fill="var(--foreground)" fontSize="15" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="800">{score}</text>
+      {/* <text x={cx} y={84} textAnchor="middle" fill="var(--foreground)" fontSize="15" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="800">{score}</text> */}
     </svg>);
 
 }

@@ -222,7 +222,10 @@ export function ResultsScreen({ onBack, onViewExplainability }) {
 
             })}
           </div>
+          
         </div>
+        
+        
 
         {/* Trend chart */}
         <div className="lg:col-span-1 bg-card rounded-2xl border border-border p-5">
@@ -286,6 +289,9 @@ export function ResultsScreen({ onBack, onViewExplainability }) {
             New Analysis
           </button>
         </div>
+        
+        
+
       </div>
     </div>);
 
