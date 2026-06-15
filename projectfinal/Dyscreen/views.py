@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from django.core.files.storage import FileSystemStorage
 #imports for the model:
 import pandas as pd
@@ -23,6 +23,19 @@ from .model_learning import Heatmap_extractions as HT # heatmaps functions.
 #Database connection
 
 
+
+ALLOWED_BASE = os.path.realpath(settings.MEDIA_ROOT)
+
+
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+@ensure_csrf_cookie
+def csrf_token_view(request):
+    token = get_token(request)
+    return JsonResponse({"csrfToken": token})  # ← must return the token value
+
+
 @api_view(["GET"])
 def hello(request):
     return Response({"message": "Hello2 from Django"})
@@ -37,8 +50,13 @@ def ping_mongo(request):
         "collections": db.list_collection_names()
     })
 
+
+
 class file_model_functions(APIView):
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser,JSONParser]
+
+    def is_path_save(self,path):
+        return os.path.realpath(path).startswith(ALLOWED_BASE)#check.
 
     _model = None
     @classmethod
@@ -126,7 +144,6 @@ class file_model_functions(APIView):
     
     #Get the file to model
     def post(self,request):
-
         file = request.FILES.get("myfile")
         model_to_use = request.data.get("model")
         print("Choosen Model is : ",model_to_use)
@@ -191,39 +208,48 @@ class file_model_functions(APIView):
                     "error":"Model failed",
                     "details": str(err)
                 },status = 500)
-        
+
+       
     def delete(self,request):
         '''
         Removing the Data the User uploaded.
         '''
-        print(request.data)
-        
-        for elem in request.data:
-            elem.get() #file
-            elem = elem.replace("http://127.0.0.1:8000/","")
-            
+        from urllib.parse import urlparse
+
+        print("Starting Deletions")
+
         photo_url = request.data.get("photo")
-        heatmap_url =request.data.get("heatmap")
-        Orignal_url = request.data.get("OG")
-        photo_url = photo_url.replace("http://127.0.0.1:8000/","") # the slash is the most important thing!
-        heatmap_url = heatmap_url.replace("http://127.0.0.1:8000/","")
-        Orignal_url = Orignal_url.replace("http://127.0.0.1:8000/","")
-        print("url ", Orignal_url)
-              
+        heatmap_url = request.data.get("heatmap")
+        og_path = request.data.get("OG")  # server-side absolute path
+
+        def url_to_file_path(url):
+            if not url:
+                return None
+            parsed_path = urlparse(url).path  
+            media_url = settings.MEDIA_URL    
+            if parsed_path.startswith(media_url):
+                rel = parsed_path[len(media_url):] 
+                return os.path.join(settings.MEDIA_ROOT, rel)
+            return None
+
+        photo_path = url_to_file_path(photo_url)
+        heatmap_path = url_to_file_path(heatmap_url)
+
+        print("photo_path:", photo_path)
+        print("heatmap_path:", heatmap_path)
+        print("og_path:", og_path)
+
         try:
-        
-            if(os.path.exists(photo_url)):
-                print("Found path")
-                os.remove(photo_url)
-            if(os.path.exists(heatmap_url)):
-                os.remove(heatmap_url)
-            if(os.path.exists(Orignal_url)):
-                os.remove(Orignal_url)
+            for path in [photo_path, heatmap_path, og_path]:
+                if path and os.path.exists(path) and self.is_path_save(path):
+                    os.remove(path)
+                    print("Deleted:", path)
             return Response({
             "Result": "Success"
             },status= 200)
-        
+
         except Exception as err:
+            print(err)
             return Response({
                 "Result":"Failed",
                 "error": f'This error has be ariesd {err}'

@@ -19,10 +19,11 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from Dyscreen.views import hello,ping_mongo,file_model_functions
+from Dyscreen.views import hello,ping_mongo,file_model_functions,csrf_token_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hello/', hello),
+    path('csrf/', csrf_token_view),
     path('ping-mongo', ping_mongo),
     path('upload_file',file_model_functions.as_view())
     

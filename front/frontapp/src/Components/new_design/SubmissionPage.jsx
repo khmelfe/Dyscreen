@@ -15,10 +15,18 @@ const processingSteps = [
   "Generating report",
 ];
 
-const durations = [900, 1000, 1100, 700, 500];
-const BASE_URL_UPLOAD = "http://127.0.0.1:8000/upload_file";
 
-export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisComplete, onAnalysisFailed, processing }) {
+function getCsrfToken() {
+    return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+}
+
+const durations = [900, 1000, 1100, 700, 500];
+const BASE_URL_UPLOAD = "http://localhost:8000/upload_file";
+
+export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisComplete, onAnalysisFailed, processing,csrfToken }) {
   const [inputMode, setInputMode] = useState("none");
   const [uploadedFile, setUploadedFile] = useState(null);
   const [model,setmodel] = useState("CNN_LSTM");
@@ -104,7 +112,10 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
         try{
           const [, res] = await Promise.all([
           onAnalyze(),
-          axios.post(BASE_URL_UPLOAD, dataForm),
+          axios.post(BASE_URL_UPLOAD, dataForm,{
+     headers: { "X-CSRFToken": csrfToken },  // ← from response body
+    withCredentials: true  // ← merged in
+}),
                   ]);
            
             console.log(res.data.prob)

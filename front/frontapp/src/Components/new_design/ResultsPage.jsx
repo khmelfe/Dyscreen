@@ -12,7 +12,7 @@ import {
 
 const RISK_SCORE = 42;
 const CONFIDENCE = 87.3;
-const BACKEND_ORIGIN = "http://127.0.0.1:8000";
+const BACKEND_ORIGIN = "http://localhost:8000";
 
 const metrics = [
 { label: "Detected lines:", value: 52, status: "moderate" },

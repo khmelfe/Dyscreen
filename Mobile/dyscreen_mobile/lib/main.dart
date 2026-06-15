@@ -219,7 +219,33 @@ class _DyscreenHomePageState extends State<DyscreenHomePage> {
     }
   }
 
-  void _reset() {
+  Future<void> removingFiles() async {
+    final result = _result;
+    if (result == null) return;
+
+    final apiBase = _apiBaseController.text.trim().replaceAll(
+      RegExp(r'/+$'),
+      '',
+    );
+    final uri = Uri.parse('$apiBase/upload_file');
+    await http.delete(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "photo": result.features.annotatedUrl,
+        "heatmap": result.heatmapUrl,
+        "OG": result.originalPath,
+      }),
+    );
+  }
+
+  Future<void> _reset() async {
+    try {
+      await removingFiles();
+    } catch (e) {
+      print("Deletion Failed $e");
+    }
+    //Make Deletion in the server.
     setState(() {
       _selectedFile = null;
       _result = null;
@@ -1935,6 +1961,7 @@ class AnalysisResult {
     required this.label,
     required this.features,
     required this.heatmapUrl,
+    required this.originalPath,
   });
 
   factory AnalysisResult.fromJson(Map<String, dynamic> json) {
@@ -1946,6 +1973,7 @@ class AnalysisResult {
         (json['features'] as Map?)?.cast<String, dynamic>() ?? const {},
       ),
       heatmapUrl: json['heatmap_url']?.toString() ?? 'Unknown',
+      originalPath: json['Orignal_photo']?.toString() ?? '',
     );
   }
 
@@ -1954,6 +1982,7 @@ class AnalysisResult {
   final String label;
   final FeatureDetails features;
   final String heatmapUrl;
+  final String originalPath;
 
   double get probabilityPercent => probability * 100;
 }

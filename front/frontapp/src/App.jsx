@@ -1,17 +1,22 @@
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { SubmissionPage } from "./Components/new_design/SubmissionPage.jsx";
 import { ResultsPage } from "./Components/new_design/ResultsPage.jsx";
 import { LandingPage } from "./Components/new_design/LandingPage.jsx";
 import axios from "axios";
 
-const BASE_URL_Delete = "http://127.0.0.1:8000/upload_file"
+const BASE_URL_Delete =  "http://localhost:8000/upload_file"
+
+
+
+
 
 
 export default function App() {
   const [page, setPage] = useState("submit");
   const [darkMode, setDarkMode] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [csrfToken, setCsrfToken] = useState(null); //security.
 
   const handleAnalyze = () => {
     setPage("processing");
@@ -19,6 +24,23 @@ export default function App() {
       setTimeout(resolve, 4200);
     });
   };
+
+
+useEffect(() => {
+    axios.get("http://localhost:8000/csrf/", { withCredentials: true })
+        .then(res => setCsrfToken(res.data.csrfToken));
+    console.log(csrfToken);  // ← read from body, not cookie
+}, []);
+
+
+
+function getCsrfToken() {
+    return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+}
+  
 
   const handleAnalysisComplete = (result) => {
     setAnalysisResult(result);
@@ -44,7 +66,12 @@ export default function App() {
     dataform.append("heatmap",heatmap_url);
     dataform.append("OG",OG);
     try{
-    axios.delete(BASE_URL_Delete,{"data":dataform});
+axios.delete(BASE_URL_Delete, {
+    data: dataform,
+    headers: { "X-CSRFToken": csrfToken },
+    withCredentials: true
+})
+
     console.log("Files were deleted Succesfully");
     }
     catch(err){
@@ -66,6 +93,7 @@ export default function App() {
             onAnalysisComplete={handleAnalysisComplete}
             onAnalysisFailed={handleNewAnalysis}
             processing={page === "processing"}
+            csrfToken={csrfToken}
           />
         ) : (
           <ResultsPage
