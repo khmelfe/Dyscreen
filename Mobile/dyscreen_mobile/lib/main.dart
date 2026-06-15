@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -297,7 +298,11 @@ class _DyscreenHomePageState extends State<DyscreenHomePage> {
                               const SizedBox(height: 42),
                               const _HowItWorksSection(),
                               const SizedBox(height: 28),
+                              const _AboutSection(),
+                              const SizedBox(height: 28),
                               const _DisclaimerCard(),
+                              const SizedBox(height: 28),
+                              const _AppFooter(),
                             ],
                           ],
                         ),
@@ -417,10 +422,10 @@ class _UploadSurface extends StatelessWidget {
           runSpacing: 10,
           alignment: WrapAlignment.center,
           children: [
-            _StepPill(icon: Icons.bolt_rounded, text: 'AI Detection'),
-            _StepPill(icon: Icons.bar_chart_rounded, text: '8 Metrics'),
+            _StepPill(icon: Icons.bolt_rounded, text: 'Deep learning'),
+            _StepPill(icon: Icons.bar_chart_rounded, text: '6 Metrics'),
             _StepPill(icon: Icons.visibility_rounded, text: 'Heatmaps'),
-            _StepPill(icon: Icons.trending_up_rounded, text: 'Risk Score'),
+            _StepPill(icon: Icons.trending_up_rounded, text: 'Screening Score'),
           ],
         ),
       ],
@@ -589,8 +594,8 @@ class _HeroTitle extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          'AI-Powered',
-          textAlign: TextAlign.center,
+          'Welcome to',
+          textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: 42,
             height: 1.12,
@@ -604,7 +609,7 @@ class _HeroTitle extends StatelessWidget {
             colors: [_AppColors.primary, _AppColors.accent],
           ).createShader(bounds),
           child: const Text(
-            'Dysgraphia Screening',
+            'DyScreen',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 42,
@@ -719,10 +724,26 @@ class _HowItWorksSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const steps = [
-      ('01', 'Submit Sample', 'Upload a photo or write directly on canvas.'),
-      ('02', 'Feature Extraction', 'The AI extracts handwriting metrics.'),
-      ('03', 'Classification', 'The model predicts dysgraphia risk.'),
-      ('04', 'Explainability', 'Heatmaps highlight decision regions.'),
+      (
+        '01',
+        'Submit Sample',
+        'Upload a clear photo or scan of a handwritten Hebrew sample.',
+      ),
+      (
+        '02',
+        'Feature Extraction',
+        'The model extracts 6 quantitative handwriting metrics.',
+      ),
+      (
+        '03',
+        'Classification',
+        'A fine-tuned CNN model predicts Likelihood percentage of Learning disabilities.',
+      ),
+      (
+        '04',
+        'Explainability',
+        'Grad-CAM heatmaps highlight the decision-making regions.',
+      ),
     ];
 
     return _GlassPanel(
@@ -749,7 +770,7 @@ class _HowItWorksSection extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final step = steps[index];
                   return Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: _AppColors.background,
                       borderRadius: BorderRadius.circular(16),
@@ -760,7 +781,7 @@ class _HowItWorksSection extends StatelessWidget {
                       children: [
                         Container(
                           width: 42,
-                          height: 42,
+                          height: 30,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: _AppColors.primarySoft,
@@ -771,11 +792,11 @@ class _HowItWorksSection extends StatelessWidget {
                             style: const TextStyle(
                               color: _AppColors.primary,
                               fontWeight: FontWeight.w900,
-                              fontSize: 13,
+                              fontSize: 14,
                             ),
                           ),
                         ),
-                        const Spacer(),
+                        const SizedBox(height: 14),
                         Text(
                           step.$2,
                           style: const TextStyle(
@@ -783,13 +804,13 @@ class _HowItWorksSection extends StatelessWidget {
                             fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 8),
                         Text(
                           step.$3,
                           style: const TextStyle(
                             color: _AppColors.mutedText,
-                            fontSize: 12,
-                            height: 1.35,
+                            fontSize: 14,
+                            height: 1.4,
                           ),
                         ),
                       ],
@@ -828,7 +849,7 @@ class _DisclaimerCard extends StatelessWidget {
           SizedBox(width: 12),
           Expanded(
             child: Text(
-              'DyScreen provides screening assistance only and does not replace professional evaluation.',
+              'DyScreen provide a preliminary screening assistance only and does not replace professional evaluation.',
               style: TextStyle(
                 color: Color(0xFF92400E),
                 fontSize: 13,
@@ -843,7 +864,232 @@ class _DisclaimerCard extends StatelessWidget {
   }
 }
 
-class _ResultsSurface extends StatelessWidget {
+class _AboutSection extends StatelessWidget {
+  const _AboutSection();
+
+  @override
+  Widget build(BuildContext context) {
+    const metrics = [
+      (
+        'Detected Lines',
+        'Measures the percentage of words that remain stable on the detected writing baseline',
+      ),
+      ('Total Words', 'The total number of words'),
+      (
+        'Words Above Baseline',
+        'Counts how many words drifted significantly above the expected line threshold',
+      ),
+      (
+        'Words Under Baseline',
+        'Counts how many words dipped below the baseline threshold, which can indicate spatial tracking difficulties',
+      ),
+      (
+        'Average Word Spacing',
+        'The mathematical average distance between words, establishing the writer\'s baseline spatial layout',
+      ),
+      ('Above-Average Gaps', 'The total spaces above the average gap'),
+    ];
+
+    final leftColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'ABOUT',
+          style: TextStyle(
+            color: _AppColors.accent,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 2,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'What is a Learning disability?',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w800,
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: 14),
+        const Text(
+          'Learning differences can impact how a person processes information and expresses themselves, often showing up as persistent challenges with writing, reading, spelling, or maintaining focus. Because conditions like dysgraphia, dyslexia, and ADHD frequently overlap, understanding a student\'s unique profile is essential.',
+          style: TextStyle(
+            color: _AppColors.mutedText,
+            fontSize: 14,
+            height: 1.7,
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          'DyScreen is designed to provide a preliminary screening, giving users a clear initial indication of potential learning and writing challenges.',
+          style: TextStyle(
+            color: _AppColors.mutedText,
+            fontSize: 14,
+            height: 1.7,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFFBEB),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFFDE68A)),
+          ),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Color(0xFFF59E0B),
+                size: 18,
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Disclaimer: DyScreen provides first screening assistance only. Results do not constitute a clinical diagnosis. Always consult a qualified educational specialist or occupational therapist.',
+                  style: TextStyle(
+                    color: Color(0xFF92400E),
+                    fontSize: 13,
+                    height: 1.6,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    final rightColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Metrics analyzed',
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 12),
+        for (final (i, m) in metrics.indexed) ...[
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _AppColors.card,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: _AppColors.border),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.check_circle_rounded,
+                  size: 16,
+                  color: _AppColors.accent,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        m.$1,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        m.$2,
+                        style: const TextStyle(
+                          color: _AppColors.mutedText,
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (i < metrics.length - 1) const SizedBox(height: 8),
+        ],
+      ],
+    );
+
+    return _GlassPanel(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth >= 640) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: leftColumn),
+                const SizedBox(width: 24),
+                Expanded(child: rightColumn),
+              ],
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [leftColumn, const SizedBox(height: 24), rightColumn],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _AppFooter extends StatelessWidget {
+  const _AppFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    const logo = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.psychology_rounded, size: 16, color: _AppColors.primary),
+        SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            'DyScreen · Deep Learning Handwriting Screening · 2026',
+            style: TextStyle(color: _AppColors.mutedText, fontSize: 12),
+          ),
+        ),
+      ],
+    );
+    const warning = Text(
+      '⚠️ Not a diagnostic tool · For preliminary screening purposes only',
+      style: TextStyle(color: _AppColors.mutedText, fontSize: 12),
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      decoration: BoxDecoration(
+        color: _AppColors.card,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _AppColors.border),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth >= 500) {
+            return const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [logo, warning],
+            );
+          }
+          return const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [logo, SizedBox(height: 8), warning],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ResultsSurface extends StatefulWidget {
   const _ResultsSurface({
     required this.isWide,
     required this.result,
@@ -855,116 +1101,287 @@ class _ResultsSurface extends StatelessWidget {
   final VoidCallback onReset;
 
   @override
-  Widget build(BuildContext context) {
-    final highLikelihood = result.probabilityPercent >= 50;
-    final resultTitle = highLikelihood
-        ? 'Potential dysgraphia markers detected'
-        : 'Low marker likelihood detected';
-    final resultCopy = highLikelihood
-        ? 'The analysis identified signs that may warrant further professional review.'
-        : 'The handwriting sample showed fewer markers in the analyzed feature set.';
-    final details = _GlassPanel(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _DisclaimerCard(),
-          const SizedBox(height: 18),
-          Text(
-            resultTitle,
-            style: const TextStyle(
-              fontSize: 24,
-              height: 1.2,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            resultCopy,
-            style: const TextStyle(
-              color: _AppColors.mutedText,
-              fontSize: 14,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 18),
-          _ResultBadge(result: result),
-          const SizedBox(height: 18),
-          _LikelihoodBar(probability: result.probabilityPercent),
-          const SizedBox(height: 24),
-          const Text(
-            'Handwriting Metrics',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 12),
-          _MetricGrid(features: result.features),
-          const SizedBox(height: 18),
-          FilledButton.icon(
-            onPressed: onReset,
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('New Analysis'),
-            style: FilledButton.styleFrom(
-              backgroundColor: _AppColors.primary,
-              foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(56),
-              textStyle: const TextStyle(fontWeight: FontWeight.w800),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  State<_ResultsSurface> createState() => _ResultsSurfaceState();
+}
 
-    final images = _GlassPanel(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Row(
+class _ResultsSurfaceState extends State<_ResultsSurface> {
+  bool _showHeatmap = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final result = widget.result;
+    final confidence = result.probabilityPercent;
+    final riskScore = confidence.round();
+
+    final String riskLabel;
+    final String riskHeadline;
+    final String riskBody;
+    final Color riskColor;
+    final Color riskBg;
+
+    if (riskScore < 35) {
+      riskLabel = 'Low Risk';
+      riskHeadline = 'No significant learning disabilities markers detected';
+      riskBody =
+          'The analysis indicates that the handwriting patterns closely align with typical development. Minimal to no indicators of LDs — such as severe baseline drift or highly irregular letter sizing — were found.';
+      riskColor = const Color(0xFF059669);
+      riskBg = const Color(0xFFECFDF5);
+    } else if (riskScore < 65) {
+      riskLabel = 'Moderate Risk';
+      riskHeadline = 'Potential learning disabilities markers detected';
+      riskBody =
+          'The analysis identified moderate signs consistent with LDs — such as inconsistent word spacing, baseline drift, and variable letter sizing. These patterns suggest that writing may require significantly more effort than usual.';
+      riskColor = const Color(0xFFD97706);
+      riskBg = const Color(0xFFFFFBEB);
+    } else {
+      riskLabel = 'High Risk';
+      riskHeadline = 'Strong learning disabilities markers detected';
+      riskBody =
+          'The analysis identified pronounced, consistent indicators strongly associated with LDs. These include highly irregular letter formations, significant spacing inconsistencies, and severe baseline deviations across the analyzed text.';
+      riskColor = const Color(0xFFDC2626);
+      riskBg = const Color(0xFFFEF2F2);
+    }
+
+    final formattedDate = _formatDate(DateTime.now());
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Disclaimer
+        const _DisclaimerCard(),
+        const SizedBox(height: 16),
+
+        // Header card: gauge + risk info
+        _GlassPanel(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.visibility_rounded, color: _AppColors.primary),
-              SizedBox(width: 8),
-              Text(
-                'Visual Analysis',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+              Column(
+                children: [
+                  _GaugeChart(score: riskScore),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: riskBg,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      riskLabel,
+                      style: TextStyle(
+                        color: riskColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Analysis · $formattedDate',
+                      style: const TextStyle(
+                        color: _AppColors.mutedText,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      riskHeadline,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      riskBody,
+                      style: const TextStyle(
+                        color: _AppColors.mutedText,
+                        fontSize: 13,
+                        height: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        _ResultStatItem(
+                          label: 'Likelihood',
+                          value: '${confidence.toStringAsFixed(1)}%',
+                          color: _AppColors.primary,
+                        ),
+                        const SizedBox(width: 24),
+                        const _ResultStatItem(
+                          label: 'Metrics Analyzed',
+                          value: '6',
+                          color: _AppColors.accent,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          _SectionLabel(icon: Icons.layers_rounded, text: 'Feature selection'),
-          const SizedBox(height: 10),
-          _AnnotatedImage(url: result.features.annotatedUrl, height: 250),
-          const SizedBox(height: 14),
-          const _Legend(),
-          const SizedBox(height: 22),
-          const _SectionLabel(
-            icon: Icons.local_fire_department,
-            text: 'Heatmap',
+        ),
+        const SizedBox(height: 16),
+
+        // Visual Analysis card with Original / Heatmap toggle
+        _GlassPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Visual Analysis',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: _AppColors.muted,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _ImageToggleButton(
+                          label: 'Original',
+                          active: !_showHeatmap,
+                          onTap: () => setState(() => _showHeatmap = false),
+                        ),
+                        _ImageToggleButton(
+                          label: 'Heatmap',
+                          active: _showHeatmap,
+                          icon: Icons.layers_rounded,
+                          onTap: () => setState(() => _showHeatmap = true),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _AnnotatedImage(
+                url: _showHeatmap
+                    ? result.heatmapUrl
+                    : result.features.annotatedUrl,
+                height: 260,
+                fit: _showHeatmap ? BoxFit.fill : BoxFit.contain,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _showHeatmap
+                    ? 'Red = regions that most influenced the model prediction.'
+                    : 'Original submitted handwriting sample.',
+                style: const TextStyle(
+                  color: _AppColors.mutedText,
+                  fontSize: 11,
+                ),
+              ),
+              if (!_showHeatmap) ...[
+                const SizedBox(height: 12),
+                const _Legend(),
+              ],
+              if (_showHeatmap) ...[
+                const SizedBox(height: 12),
+                const _AttentionScale(),
+              ],
+            ],
           ),
-          const SizedBox(height: 10),
-          _AnnotatedImage(
-            url: result.heatmapUrl,
-            height: 250,
-            fit: BoxFit.fill,
+        ),
+        const SizedBox(height: 16),
+
+        // Handwriting Metrics card
+        _GlassPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Handwriting Metrics',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 12),
+              _MetricProgressTile(
+                label: 'Detected Lines',
+                value: result.features.detectedLines,
+                maxValue: 5,
+              ),
+              const SizedBox(height: 10),
+              _MetricProgressTile(
+                label: 'Total Words',
+                value: result.features.totalWordsFound,
+                maxValue: 50,
+              ),
+              const SizedBox(height: 16),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final cols = constraints.maxWidth >= 480 ? 2 : 1;
+                  return GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: cols,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: cols == 2 ? 2.6 : 4.0,
+                    children: [
+                      _MetricStatCard(
+                        title: 'Words Above Baseline',
+                        value: result.features.countAboveLines.toString(),
+                      ),
+                      _MetricStatCard(
+                        title: 'Words Below Baseline',
+                        value: result.features.countUnderLines.toString(),
+                      ),
+                      _MetricStatCard(
+                        title: 'Average Word Spacing',
+                        value: result.features.largeGapCount.toString(),
+                      ),
+                      _MetricStatCard(
+                        title: 'Above-Average Gaps',
+                        value: result.features.amountSpaces.toString(),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          const _AttentionScale(),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+
+        // New Analysis CTA
+        OutlinedButton(
+          onPressed: widget.onReset,
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(54),
+            side: const BorderSide(color: _AppColors.border),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            foregroundColor: _AppColors.foreground,
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 15,
+            ),
+          ),
+          child: const Text('← New Analysis'),
+        ),
+        const SizedBox(height: 28),
+      ],
     );
-
-    if (isWide) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(flex: 4, child: details),
-          const SizedBox(width: 24),
-          Expanded(flex: 6, child: images),
-        ],
-      );
-    }
-
-    return Column(children: [details, const SizedBox(height: 18), images]);
   }
 }
 
@@ -1946,6 +2363,314 @@ class _AttentionScaleItem extends StatelessWidget {
               color: _AppColors.mutedText,
               fontSize: 14,
               height: 1.35,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _formatDate(DateTime date) {
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  return '${months[date.month - 1]} ${date.day}, ${date.year}';
+}
+
+class _GaugeChart extends StatelessWidget {
+  const _GaugeChart({required this.score});
+
+  final int score;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: const Size(160, 90),
+      painter: _GaugePainter(score: score),
+    );
+  }
+}
+
+class _GaugePainter extends CustomPainter {
+  _GaugePainter({required this.score});
+
+  final int score;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const double cx = 80.0;
+    const double cy = 80.0;
+    const double innerR = 42.0;
+    const double outerR = 62.0;
+    const double startAngle = math.pi;
+    const double totalAngle = math.pi;
+
+    canvas.scale(size.width / 160.0, size.height / 90.0);
+
+    final segmentData = [
+      (startAngle, startAngle + totalAngle * 0.35, const Color(0xFF0D9488)),
+      (
+        startAngle + totalAngle * 0.35,
+        startAngle + totalAngle * 0.65,
+        const Color(0xFFF59E0B),
+      ),
+      (
+        startAngle + totalAngle * 0.65,
+        startAngle + totalAngle,
+        const Color(0xFFEF4444),
+      ),
+    ];
+
+    for (final seg in segmentData) {
+      final from = seg.$1;
+      final to = seg.$2;
+      final path = Path();
+      path.moveTo(cx + outerR * math.cos(from), cy + outerR * math.sin(from));
+      path.arcTo(
+        Rect.fromCircle(center: const Offset(cx, cy), radius: outerR),
+        from,
+        to - from,
+        false,
+      );
+      path.lineTo(cx + innerR * math.cos(to), cy + innerR * math.sin(to));
+      path.arcTo(
+        Rect.fromCircle(center: const Offset(cx, cy), radius: innerR),
+        to,
+        from - to,
+        false,
+      );
+      path.close();
+      canvas.drawPath(path, Paint()..color = seg.$3);
+    }
+
+    final needleAngle = startAngle + (score / 100.0) * totalAngle;
+    final needleX = cx + 50.0 * math.cos(needleAngle);
+    final needleY = cy + 50.0 * math.sin(needleAngle);
+
+    canvas.drawLine(
+      const Offset(cx, cy),
+      Offset(needleX, needleY),
+      Paint()
+        ..color = _AppColors.foreground
+        ..strokeWidth = 2.5
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawCircle(
+      const Offset(cx, cy),
+      4,
+      Paint()..color = _AppColors.foreground,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _GaugePainter oldDelegate) =>
+      oldDelegate.score != score;
+}
+
+class _ResultStatItem extends StatelessWidget {
+  const _ResultStatItem({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(color: _AppColors.mutedText, fontSize: 12),
+        ),
+      ],
+    );
+  }
+}
+
+class _ImageToggleButton extends StatelessWidget {
+  const _ImageToggleButton({
+    required this.label,
+    required this.active,
+    required this.onTap,
+    this.icon,
+  });
+
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: active ? _AppColors.card : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: active
+              ? [const BoxShadow(color: Color(0x18000000), blurRadius: 4)]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 13,
+                color: active ? _AppColors.foreground : _AppColors.mutedText,
+              ),
+              const SizedBox(width: 4),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: active ? _AppColors.foreground : _AppColors.mutedText,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MetricProgressTile extends StatelessWidget {
+  const _MetricProgressTile({
+    required this.label,
+    required this.value,
+    required this.maxValue,
+  });
+
+  final String label;
+  final int value;
+  final int maxValue;
+
+  @override
+  Widget build(BuildContext context) {
+    final ratio = (value / maxValue).clamp(0.0, 1.0);
+    final Color barColor = ratio > 0.7
+        ? const Color(0xFF0D9488)
+        : ratio > 0.3
+        ? const Color(0xFFF59E0B)
+        : const Color(0xFFEF4444);
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: _AppColors.muted,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                value.toString(),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: barColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Stack(
+            children: [
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  color: _AppColors.border,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: ratio,
+                child: Container(
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: barColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricStatCard extends StatelessWidget {
+  const _MetricStatCard({required this.title, required this.value});
+
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: _AppColors.background,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: _AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: _AppColors.mutedText,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
