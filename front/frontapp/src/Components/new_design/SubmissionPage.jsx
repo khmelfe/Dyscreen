@@ -10,7 +10,7 @@ import axios from "axios";
 const processingSteps = [
   "Detecting text regions",
   "Extracting handwriting features",
-  "Running AI classification model",
+  "Running classification model",
   "Computing visual explanations",
   "Generating report",
 ];
@@ -179,7 +179,7 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
             className="text-center text-muted-foreground mb-8"
             style={{ fontSize: 14 }}
           >
-            Our AI model is processing your sample…
+            Our model is processing your sample…
           </p>
 
           <div className="mb-6">
@@ -263,7 +263,7 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
             className="text-center text-muted-foreground mt-6"
             style={{ fontSize: 11 }}
           >
-            ⚠️ DyScreen is a screening tool and does not replace professional
+            ⚠️ DyScreen is a preliminary screening tool and does not replace professional
             evaluation.
           </p>
         </div>

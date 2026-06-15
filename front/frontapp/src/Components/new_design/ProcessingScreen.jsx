@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 import { Brain, CheckCircle } from "lucide-react";
 
-
-
-
-
 const steps = [
 { label: "Detecting text regions", duration: 1200 },
 { label: "Extracting handwriting features", duration: 1400 },
-{ label: "Running AI classification model", duration: 1600 },
+{ label: "Running classification model", duration: 1600 },
 { label: "Computing visual explanations", duration: 1200 },
 { label: "Generating detailed report", duration: 800 }];
 
@@ -91,7 +87,7 @@ export function ProcessingScreen({ onComplete }) {
           {done ? "Analysis Complete!" : "Analyzing Handwriting"}
         </h2>
         <p className="text-center text-muted-foreground mb-8" style={{ fontSize: 14 }}>
-          {done ? "Your results are ready." : "Our AI model is processing your sample. This usually takes under 30 seconds."}
+          {done ? "Your results are ready." : "Our model is processing your sample. This usually takes under 30 seconds."}
         </p>
 
         {/* Progress bar */}
@@ -195,7 +191,7 @@ export function ProcessingScreen({ onComplete }) {
         </div>
 
         <p className="text-center text-muted-foreground mt-4" style={{ fontSize: 11 }}>
-          ⚠️ DyScreen provides screening assistance and does not replace professional evaluation.
+          ⚠️ DyScreen provides preliminary screening assistance and does not replace professional evaluation.
         </p>
       </div>
 

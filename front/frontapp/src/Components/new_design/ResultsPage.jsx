@@ -171,7 +171,7 @@ export function ResultsPage({ result, darkMode, onToggleDark, onNewAnalysis }) {
         <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3">
           <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
           <p style={{ fontSize: 12 }} className="text-amber-800 dark:text-amber-400">
-            <strong>Screening only.</strong> DyScreen does not replace professional evaluation. Consult an educational specialist or occupational therapist.
+            <strong>Preliminary Screening only.</strong> DyScreen does not replace professional evaluation. Consult an educational specialist or occupational therapist.
           </p>
         </div>
 
@@ -193,7 +193,7 @@ export function ResultsPage({ result, darkMode, onToggleDark, onNewAnalysis }) {
                 The analysis identified moderate signs consistent with dysgraphia — inconsistent word spacing, baseline drift, and variable letter sizing. These patterns may warrant further professional evaluation.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Stat label="Confidence" value={`${confidence}%`} color="text-primary" />
+                <Stat label="Likelihood" value={`${confidence}%`} color="text-primary" />
                 <Stat label="Metrics Analyzed" value="6" color="text-accent" />
               </div>
             </div>
@@ -218,7 +218,7 @@ export function ResultsPage({ result, darkMode, onToggleDark, onNewAnalysis }) {
               <HandwritingSVG heatmap={showHeatmap} annotatedUrl={annotatedUrl} heatmapurl={heatmapUrl}  />
             </div>
             <p className="text-muted-foreground mt-2" style={{ fontSize: 11 }}>
-              {showHeatmap ? "Red = regions that most influenced the AI prediction." : "Original submitted handwriting sample."}
+              {showHeatmap ? "Red = regions that most influenced the model prediction." : "Original submitted handwriting sample."}
             </p>
             
           </div>
@@ -270,52 +270,6 @@ export function ResultsPage({ result, darkMode, onToggleDark, onNewAnalysis }) {
             ))}
           </div>
         </div>
-
-     
-
-        {/* AI Explanations */}
-        <div className="bg-card rounded-2xl border border-border p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Eye className="w-4 h-4 text-primary" />
-            <h3 className="text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 15 }}>AI Explanation (Grad-CAM)</h3>
-          </div>
-          <div className="space-y-3">
-            {explanations.map((exp) => {
-              const Icon = exp.icon;
-              const s = severityStyle[exp.severity];
-              const isOpen = expanded === exp.id;
-              return (
-                <div key={exp.id} className={`rounded-xl border transition-all cursor-pointer ${s.bg} ${s.border}`} onClick={() => setExpanded(isOpen ? null : exp.id)}>
-                  <div className="flex items-start gap-3 p-4">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${s.iconCls}`}>
-                      <Icon className="w-3.5 h-3.5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <h4 className="text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 13 }}>{exp.title}</h4>
-                        <span className={`px-2 py-0.5 rounded-full flex-shrink-0 ${s.badge}`} style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase" }}>{exp.severity}</span>
-                      </div>
-                      <p className="text-muted-foreground" style={{ fontSize: 12 }}>{exp.summary}</p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className={exp.contribution > 0 ? "text-red-500" : "text-green-500"} style={{ fontSize: 12, fontFamily: "'DM Mono', monospace", fontWeight: 700 }}>
-                        {exp.contribution > 0 ? `+${exp.contribution}%` : `${exp.contribution}%`}
-                      </span>
-                      {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-                    </div>
-                  </div>
-                  {isOpen &&
-                  <div className="px-4 pb-4 pt-1 border-t border-black/5">
-                      <p className="text-foreground" style={{ fontSize: 13, lineHeight: 1.65 }}>{exp.detail}</p>
-                    </div>
-                  }
-                </div>);
-
-            })}
-          </div>
-        </div>
-
-    
 
         {/* CTA */}
         <div className="flex flex-col sm:flex-row gap-3 pb-8">
