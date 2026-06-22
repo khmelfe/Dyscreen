@@ -82,10 +82,7 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
             alert("Error in file uploading please try again");
             return;
         }
-        if(!this.state.fileupload.type.startsWith("image/")){
-          alert("Please select an image file");
-          return;
-        }
+        
         console.log(fileupload);
         setUploadedPreview(URL.createObjectURL(fileupload));
         setfile(fileupload);
