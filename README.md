@@ -1,8 +1,9 @@
-# Dyscreen — Learning disabilities  Screening System
+# Dyscreen — Learning disabilities Screening System
 
 Dyscreen is an AI-powered system for **screening** Learning disabilities from handwriting samples. A user uploads (or draws) a handwriting image; the backend runs a deep-learning model and a set of image-analysis features, then returns a **screening probability** together with annotated visuals.
 
-> **Important:** Dyscreen is a screening aid, **not a diagnostic tool**. It is designed to flag handwriting that may warrant further attention and to encourage referral to a qualified professional. It does not diagnose dysgraphia.
+> **Important:** Dyscreen is a screening aid, **not a diagnostic tool**. It is designed to flag handwriting that may warrant further attention and to encourage referral to a qualified professional. It does not diagnose Learning disabilities.
+.
 
 ---
 
@@ -47,8 +48,8 @@ benefit for this task).
 **Known limitations (important context for interpreting results):**
 
 - At the default decision threshold the model identifies roughly half of the
-  true dysgraphia cases (recall ≈ 0.50), so a "low indicator" result does **not**
-  rule out dysgraphia.
+  true Learning disabilities cases (recall ≈ 0.50), so a "low indicator" result does **not**
+  rule out Learning disabilities.
 - The model was trained on a small Hebrew dataset (143 samples); performance is
   expected to improve substantially with more data.
 - Performance was estimated via cross-validation, not on a separate held-out
