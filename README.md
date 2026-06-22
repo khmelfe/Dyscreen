@@ -1,6 +1,6 @@
-# Dyscreen — Dysgraphia Screening System
+# Dyscreen — Learning disabilities  Screening System
 
-Dyscreen is an AI-powered system for **screening** dysgraphia from handwriting samples. A user uploads (or draws) a handwriting image; the backend runs a deep-learning model and a set of image-analysis features, then returns a **screening probability** together with annotated visuals.
+Dyscreen is an AI-powered system for **screening** Learning disabilities from handwriting samples. A user uploads (or draws) a handwriting image; the backend runs a deep-learning model and a set of image-analysis features, then returns a **screening probability** together with annotated visuals.
 
 > **Important:** Dyscreen is a screening aid, **not a diagnostic tool**. It is designed to flag handwriting that may warrant further attention and to encourage referral to a qualified professional. It does not diagnose dysgraphia.
 
@@ -79,10 +79,8 @@ always recommends professional assessment for any concern.
 ### Frontend — React Web App
 
 - **Framework**: React 19 + React Router + Tailwind CSS
-- **Port**: `3000`
 - **Pages**:
-  - `LandingPage` — introduction
-  - `SubmissionPage` — file upload + model selection + loading state
+  - `SubmissionPage` — introduction + file upload + model selection + loading state
   - `ResultsPage` — screening score, annotated image, Grad-CAM heatmap, feature breakdown
 - **Communication**: Axios with CSRF token support
 
@@ -191,6 +189,43 @@ cd Mobile/dyscreen_mobile
 flutter pub get
 flutter run
 ```
+Configuring the backend address
+
+The Flutter app needs to know where the Django backend is. localhost will not
+work from a phone or emulator — on a device, localhost refers to the device
+itself, not your computer. Set the backend URL according to how you run the app:
+
+Where the app runsBackend URL to useAndroid emulatorhttp://10.0.2.2:8000  (special alias for the host machine)iOS simulatorhttp://localhost:8000 (the simulator shares the host network)Physical phonehttp://<YOUR_COMPUTER_LAN_IP>:8000 (e.g. http://192.168.1.42:8000)
+
+Find your computer's LAN IP (for a physical device — the phone must be on the
+same Wi-Fi network as your computer):
+
+bash# macOS / Linux
+ipconfig getifaddr en0        # macOS Wi-Fi
+hostname -I                   # Linux (first address)
+
+# Windows
+ipconfig                      # look for the IPv4 Address under your Wi-Fi adapter
+
+Set it in the app: open lib/main.dart and update the base URL constant, e.g.:
+
+dart// lib/main.dart
+const String backendBaseUrl = "http://192.168.1.42:8000";  // <-- your IP here
+
+On the Django side, start the server so it listens on all interfaces (not just
+localhost), and make sure the host is allowed:
+
+bashpython manage.py runserver 0.0.0.0:8000
+
+ALLOWED_HOSTS = ['*'] is already set for development, so the backend will accept
+the connection. If you tighten ALLOWED_HOSTS later, add your computer's IP to it.
+
+
+Troubleshooting: if the app can't connect, check that (1) the phone and
+computer are on the same network, (2) the server was started with 0.0.0.0:8000
+(not the default 127.0.0.1), and (3) your computer's firewall allows incoming
+connections on port 8000.
+
 
 > Make sure the Django backend is running and the device/emulator can reach `http://localhost:8000` (or update the IP in `lib/main.dart` for a physical device).
 
