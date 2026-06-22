@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from  rest_framework.views import APIView
 from django.conf import settings
 import os
+from PIL import Image
 import uuid
 import keras
 #model imports!
@@ -55,6 +56,11 @@ def ping_mongo(request):
 class file_model_functions(APIView):
     parser_classes = [MultiPartParser, FormParser,JSONParser]
 
+    allowed_types = [
+        'jpeg',
+        'jpg',
+        'png'
+    ]
     def is_path_save(self,path):
         return os.path.realpath(path).startswith(ALLOWED_BASE)#check.
 
@@ -70,7 +76,7 @@ class file_model_functions(APIView):
                  #CNN + LSTM
                  chosen_model = selected_model
                  cls._model.load_weights(
-                "Dyscreen/model_learning/dysgraphia_v3_bilingual_best_test1.keras"
+                "Dyscreen/model_learning/final_model.keras"
             ) 
             else : 
                 chosen_model = selected_model
@@ -79,14 +85,7 @@ class file_model_functions(APIView):
                 "Dyscreen/model_learning/dysgraphia_R2CNN_TRPN_hebrew_finetuned.keras"
             ) 
             
-            # Trial 1
-            # cls._model.load_weights(
-            #     "Dyscreen/model_learning/dysgraphia_v3_bilingual_best_test1.keras"
-            # ) 
-            #Trial 2 
-            # cls._model.load_weights(
-            #     "Dyscreen/model_learning/dysgraphia_v3_bilingual_best_test2.keras"
-            # ) 
+       
             
 
             print("The Chosen Model is : ", chosen_model)
@@ -145,12 +144,20 @@ class file_model_functions(APIView):
     #Get the file to model
     def post(self,request):
         file = request.FILES.get("myfile")
+        
         model_to_use = request.data.get("model")
         print("Choosen Model is : ",model_to_use)
         if not file:
             return Response({
                 "error": "Got no File \n "},status=400
             )
+        #checks if file is in correct format.
+        img = Image.open(file)
+        if (img.format).lower() not in self.allowed_types :
+            print("Error with file Extension")
+            return Response({
+                "Error": "Only JPG, PNG are allowed."
+            },status=400)
         file_path = self.save_file(request) #self -> save_files in the same class.
      
         try: 

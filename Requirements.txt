@@ -1,13 +1,26 @@
-django
+# Django & REST
+Django>=6.0
 djangorestframework
 django-cors-headers
-pandas
+
+# Deep learning
 tensorflow
+keras
+
+# Computer vision & image processing
 opencv-python
-matplotlib
-pymongo
+Pillow
+
+# Numerical / data
+numpy
+pandas
 scikit-learn
+
+# Visualization
+matplotlib
+
+# Database
+pymongo
+
+# Utilities
 python-dotenv
-rest_framework
-dotenv
-corsheaders

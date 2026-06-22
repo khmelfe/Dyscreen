@@ -31,7 +31,6 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
   const [uploadedFile, setUploadedFile] = useState(null);
   const [model,setmodel] = useState("CNN_LSTM");
   const [file,setfile]= useState(null);
-  
   const [uploadedPreview, setUploadedPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [hasStrokes, setHasStrokes] = useState(false);
@@ -82,6 +81,10 @@ export function SubmissionPage({ darkMode, onToggleDark, onAnalyze, onAnalysisCo
         if(!fileupload){
             alert("Error in file uploading please try again");
             return;
+        }
+        if(!this.state.fileupload.type.startsWith("image/")){
+          alert("Please select an image file");
+          return;
         }
         console.log(fileupload);
         setUploadedPreview(URL.createObjectURL(fileupload));
