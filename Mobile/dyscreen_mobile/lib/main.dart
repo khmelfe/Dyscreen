@@ -117,7 +117,7 @@ class _DyscreenHomePageState extends State<DyscreenHomePage> {
 
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: const ['png', 'jpg', 'jpeg', 'pdf'],
+      allowedExtensions: const ['png', 'jpg', 'jpeg'],
       withData: false,
     );
 
@@ -159,6 +159,15 @@ class _DyscreenHomePageState extends State<DyscreenHomePage> {
     if (file == null || path == null) {
       setState(() {
         _error = 'Choose a handwriting sample first.';
+      });
+      return;
+    }
+    final allowedExtensions = ['png', 'jpg', 'jpeg', 'pdf'];
+    final extension = file.extension?.toLowerCase();
+
+    if (extension == null || !allowedExtensions.contains(extension)) {
+      setState(() {
+        _error = 'Only PNG, JPG, JPEG, or PDF files are allowed.';
       });
       return;
     }
@@ -455,7 +464,7 @@ class _UploadSurface extends StatelessWidget {
                 title: 'Upload Image',
                 description:
                     'Select a clear photo, scan, PNG, JPG, JPEG, or PDF.',
-                bullets: const ['From files', 'Camera scans', 'PDF support'],
+                bullets: const ['From files', 'Camera scans'],
                 onTap: isUploading ? null : onPickFile,
               );
               final drawCard = _ModeActionCard(
